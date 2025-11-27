@@ -1,0 +1,163 @@
+<div style="font-family:'Microsoft YaHei','PingFang SC',sans-serif; font-size:15px; line-height:1.7; color:#1F2937;">
+
+    <div style="font-size:24px; color:#245BDB; font-weight:800; margin-bottom:20px;">
+        ACADEMIC WRITING SKILLS
+    </div>
+
+    <div style="font-size:20px; color:#6425D0; font-weight:bold; margin-bottom:15px;">
+        ORGANIZING SENTENCES INTO A PARAGRAPH
+    </div>
+
+    <p style="margin-bottom:15px;">
+        In written English, sentences are organized into paragraphs. A paragraph is a group of sentences about the same topic.
+    </p>
+
+    <div style="margin: 20px 0; padding: 15px; border: 1px dashed #DC9B04; background-color: #FEF9E7; border-radius: 10px;">
+        <div style="font-size:16px; color:#1F2937; font-weight:bold; margin-bottom:10px; text-align:center;">
+            The "Hamburger" Paragraph Structure
+        </div>
+
+        <div style="background-color:#FED4A4; padding:15px; border-radius:20px 20px 5px 5px; margin-bottom:5px; border: 2px solid #E0A14F; text-align:center;">
+            <span style="font-size:18px; color:#DC9B04; font-weight:bold;">1. The Topic Sentence (T)</span>
+            <div style="font-size:14px; margin-top:5px; color:#1F2937;">
+                <b>主题句</b>：描述这一段落主要讲什么。通常是段落的<b>第一句</b>。
+            </div>
+        </div>
+
+        <div style="background-color:#B7EDB1; padding:15px; margin-bottom:5px; border-left: 5px solid #2EA121; border-right: 5px solid #2EA121; text-align:center;">
+            <span style="font-size:18px; color:#2EA121; font-weight:bold;">2. Supporting Sentences (S)</span>
+            <div style="font-size:14px; margin-top:5px; color:#1F2937;">
+                <b>支持句</b>：对主题进行更多阐述。提供<b>细节 (details)</b> 和 <b>例子 (examples)</b>。位于段落中间。
+            </div>
+        </div>
+
+        <div style="background-color:#FED4A4; padding:15px; border-radius:5px 5px 20px 20px; border: 2px solid #E0A14F; text-align:center;">
+            <span style="font-size:18px; color:#DC9B04; font-weight:bold;">3. The Concluding Sentence (C)</span>
+            <div style="font-size:14px; margin-top:5px; color:#1F2937;">
+                <b>结尾句</b>：结束段落。总结主要观点。通常以 <i>"In conclusion"</i>, <i>"In summary"</i> 或 <i>"To summarize"</i> 开头。
+            </div>
+        </div>
+    </div>
+
+    <div style="font-size:18px; color:#DC9B04; font-weight:bold; margin-top:30px; margin-bottom:10px;">
+        Exercise 2: Identify the Structure
+    </div>
+
+    <p style="margin-bottom: 10px;">
+        <b>Instructions:</b> Read the sentences about <i>Teacher's Day</i>. Click the correct button (<b>T</b>, <b>S</b>, or <b>C</b>) for each sentence.
+    </p>
+
+    <div style="border: 1px solid #E5E7EB; border-radius: 8px; overflow: hidden;" id="interactive-quiz-container">
+        
+        <script>
+            function selectOption(btn, groupName) {
+                // 1. 找到当前行所有的按钮
+                var parentRow = btn.closest('.quiz-row');
+                var buttons = parentRow.querySelectorAll('.option-btn');
+                
+                // 2. 重置该行所有按钮的样式
+                buttons.forEach(function(b) {
+                    b.style.backgroundColor = '#FFFFFF'; // 白色背景
+                    b.style.color = '#6425D0'; // 紫色文字
+                    b.style.borderColor = '#E5E7EB'; // 灰色边框
+                    // 恢复未选中图标
+                    var text = b.innerText;
+                    if(text.includes('☑')) {
+                        b.innerHTML = text.replace('☑', '☐');
+                    }
+                });
+
+                // 3. 设置当前点击按钮的“选中”样式
+                btn.style.backgroundColor = '#6425D0'; // 变成紫色背景
+                btn.style.color = '#FFFFFF'; // 变成白色文字
+                btn.style.borderColor = '#6425D0';
+                // 切换为选中图标
+                var currentText = btn.innerText;
+                btn.innerHTML = currentText.replace('☐', '☑');
+            }
+        </script>
+
+        <style>
+            .option-btn {
+                cursor: pointer;
+                padding: 4px 8px;
+                border: 1px solid #E5E7EB;
+                border-radius: 6px;
+                font-family: monospace;
+                font-weight: bold;
+                color: #6425D0;
+                background-color: #fff;
+                transition: all 0.2s;
+                margin-left: 4px;
+                display: inline-block;
+                user-select: none;
+            }
+            .option-btn:hover {
+                background-color: #F3F0FF;
+                border-color: #6425D0;
+            }
+            .quiz-row {
+                padding: 12px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+        </style>
+
+        <div class="quiz-row" style="border-bottom: 1px solid #E5E7EB; background-color: #F9FAFB;">
+            <div style="width: 70%;">1. When I was a child, my classmates and I always celebrated International Teacher's Day.</div>
+            <div style="min-width: 140px; text-align: right;">
+                <span class="option-btn" onclick="selectOption(this)">☐ T</span>
+                <span class="option-btn" onclick="selectOption(this)">☐ S</span>
+                <span class="option-btn" onclick="selectOption(this)">☐ C</span>
+            </div>
+        </div>
+
+        <div class="quiz-row" style="border-bottom: 1px solid #E5E7EB; background-color: #FFFFFF;">
+            <div style="width: 70%;">2. It was my favourite day of the year.</div>
+            <div style="min-width: 140px; text-align: right;">
+                <span class="option-btn" onclick="selectOption(this)">☐ T</span>
+                <span class="option-btn" onclick="selectOption(this)">☐ S</span>
+                <span class="option-btn" onclick="selectOption(this)">☐ C</span>
+            </div>
+        </div>
+
+        <div class="quiz-row" style="border-bottom: 1px solid #E5E7EB; background-color: #F9FAFB;">
+            <div style="width: 70%;">3. We brought gifts for our teacher.</div>
+            <div style="min-width: 140px; text-align: right;">
+                <span class="option-btn" onclick="selectOption(this)">☐ T</span>
+                <span class="option-btn" onclick="selectOption(this)">☐ S</span>
+                <span class="option-btn" onclick="selectOption(this)">☐ C</span>
+            </div>
+        </div>
+
+        <div class="quiz-row" style="border-bottom: 1px solid #E5E7EB; background-color: #FFFFFF;">
+            <div style="width: 70%;">4. We ate special food and we usually played games.</div>
+            <div style="min-width: 140px; text-align: right;">
+                <span class="option-btn" onclick="selectOption(this)">☐ T</span>
+                <span class="option-btn" onclick="selectOption(this)">☐ S</span>
+                <span class="option-btn" onclick="selectOption(this)">☐ C</span>
+            </div>
+        </div>
+
+        <div class="quiz-row" style="border-bottom: 1px solid #E5E7EB; background-color: #F9FAFB;">
+            <div style="width: 70%;">5. The teachers loved Teacher's Day and the students loved it, too.</div>
+            <div style="min-width: 140px; text-align: right;">
+                <span class="option-btn" onclick="selectOption(this)">☐ T</span>
+                <span class="option-btn" onclick="selectOption(this)">☐ S</span>
+                <span class="option-btn" onclick="selectOption(this)">☐ C</span>
+            </div>
+        </div>
+
+        <div class="quiz-row" style="background-color: #FFFFFF;">
+            <div style="width: 70%;">6. To summarize, I have very special memories of Teacher's Day.</div>
+            <div style="min-width: 140px; text-align: right;">
+                <span class="option-btn" onclick="selectOption(this)">☐ T</span>
+                <span class="option-btn" onclick="selectOption(this)">☐ S</span>
+                <span class="option-btn" onclick="selectOption(this)">☐ C</span>
+            </div>
+        </div>
+
+    </div>
+
+</div>
