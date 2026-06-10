@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="人教版八年级英语 Unit 5 公开课教学设计报告，供曹老师审阅。">
+  <title>公开课教学设计报告｜呈曹老师审阅</title>
+  <style>
+    :root {
+      --navy: #173f5f;
+      --blue: #247ba0;
+      --sky: #eaf6fb;
+      --sky-strong: #d8eef7;
+      --orange: #f26b38;
+      --gold: #e8aa28;
+      --ink: #253642;
+      --muted: #61727d;
+      --line: #dbe6ec;
+      --paper: #ffffff;
+      --canvas: #f4f8fa;
+      --success: #2d8c67;
+      --shadow: 0 14px 40px rgba(25, 70, 95, 0.10);
+      --radius: 20px;
+      --content: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(36, 123, 160, 0.12), transparent 28rem),
+        linear-gradient(180deg, #eef8fc 0, var(--canvas) 35rem, var(--canvas) 100%);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif;
+      line-height: 1.75;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 72px 24px 64px;
+      color: #fff;
+      background:
+        linear-gradient(135deg, rgba(19, 61, 91, 0.98), rgba(36, 123, 160, 0.92)),
+        var(--navy);
+    }
+
+    .hero::before,
+    .hero::after {
+      position: absolute;
+      content: "";
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 420px;
+      height: 420px;
+      top: -230px;
+      right: -70px;
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 0 0 60px rgba(255,255,255,0.04);
+    }
+
+    .hero::after {
+      width: 240px;
+      height: 240px;
+      bottom: -180px;
+      left: 8%;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .hero-inner,
+    .page {
+      width: min(var(--content), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 7px 14px;
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      font-size: 14px;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font-size: clamp(36px, 6vw, 68px);
+      line-height: 1.12;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-subtitle {
+      max-width: 820px;
+      margin: 18px 0 32px;
+      color: rgba(255,255,255,0.84);
+      font-size: clamp(17px, 2vw, 22px);
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .meta-item {
+      min-height: 92px;
+      padding: 16px 18px;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+    }
+
+    .meta-label {
+      display: block;
+      margin-bottom: 4px;
+      color: rgba(255,255,255,0.62);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .meta-value {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .nav-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav {
+      display: flex;
+      width: min(var(--content), calc(100% - 40px));
+      margin: 0 auto;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav a {
+      flex: 0 0 auto;
+      padding: 16px 14px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .nav a:hover {
+      color: var(--blue);
+    }
+
+    .page {
+      padding: 42px 0 80px;
+    }
+
+    section {
+      scroll-margin-top: 68px;
+      margin-bottom: 28px;
+      padding: clamp(24px, 4vw, 42px);
+      border: 1px solid rgba(211, 226, 234, 0.92);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .section-kicker {
+      margin: 0 0 6px;
+      color: var(--orange);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0 0 22px;
+      color: var(--navy);
+      font-size: clamp(26px, 4vw, 38px);
+      line-height: 1.25;
+    }
+
+    h3 {
+      margin: 30px 0 12px;
+      color: var(--navy);
+      font-size: 21px;
+    }
+
+    p {
+      margin: 0 0 14px;
+    }
+
+    .lead {
+      color: #34505f;
+      font-size: 18px;
+    }
+
+    .callout {
+      margin: 22px 0;
+      padding: 20px 22px;
+      border-left: 5px solid var(--orange);
+      border-radius: 0 14px 14px 0;
+      background: #fff5ef;
+    }
+
+    .callout strong {
+      color: #a8441f;
+    }
+
+    .callout.blue {
+      border-left-color: var(--blue);
+      background: var(--sky);
+    }
+
+    .callout.blue strong {
+      color: var(--navy);
+    }
+
+    .goal-grid,
+    .card-grid,
+    .role-grid,
+    .review-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .goal-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .goal-card,
+    .info-card,
+    .role-card,
+    .review-card {
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: #fbfdfe;
+    }
+
+    .goal-card {
+      padding: 18px;
+    }
+
+    .goal-index {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      margin-bottom: 12px;
+      place-items: center;
+      border-radius: 11px;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 800;
+    }
+
+    .goal-card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .goal-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .lesson-arc {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: stretch;
+      gap: 12px;
+      margin: 22px 0;
+    }
+
+    .arc-block {
+      padding: 24px 20px;
+      border-radius: 16px;
+      color: #fff;
+      background: var(--navy);
+    }
+
+    .arc-block:nth-of-type(2) {
+      background: var(--blue);
+    }
+
+    .arc-block:nth-of-type(3) {
+      color: var(--navy);
+      background: #f5c95f;
+    }
+
+    .arc-time {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 26px;
+      font-weight: 900;
+    }
+
+    .arc-title {
+      display: block;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .arc-desc {
+      display: block;
+      margin-top: 6px;
+      opacity: 0.82;
+      font-size: 13px;
+    }
+
+    .arc-arrow {
+      align-self: center;
+      color: #9ab1bd;
+      font-size: 26px;
+    }
+
+    .table-wrap {
+      margin: 18px 0 4px;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 14px 15px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--navy);
+      background: #eef5f8;
+      font-size: 13px;
+      letter-spacing: 0.03em;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr:hover {
+      background: #fbfdfe;
+    }
+
+    .phase {
+      display: inline-flex;
+      padding: 4px 9px;
+      border-radius: 999px;
+      color: var(--navy);
+      background: var(--sky-strong);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .section-two-banner {
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background: linear-gradient(135deg, #173f5f, #247ba0);
+    }
+
+    .section-two-banner h2,
+    .section-two-banner h3 {
+      color: #fff;
+    }
+
+    .section-two-banner .section-kicker {
+      color: #ffd56d;
+    }
+
+    .task-spec {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .task-spec div {
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .task-spec strong {
+      display: block;
+      margin-bottom: 3px;
+      color: #ffd56d;
+      font-size: 13px;
+    }
+
+    .task-spec span {
+      font-size: 14px;
+    }
+
+    .steps {
+      counter-reset: step;
+      display: grid;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .step {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      gap: 16px;
+      align-items: start;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: #fbfdfe;
+    }
+
+    .step::before {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--orange);
+      content: counter(step);
+      font-weight: 900;
+    }
+
+    .step h3 {
+      margin: 0 0 5px;
+      font-size: 17px;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .step-time {
+      padding: 5px 10px;
+      border-radius: 999px;
+      color: var(--navy);
+      background: var(--sky-strong);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .question-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .question {
+      padding: 17px 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfdfe;
+    }
+
+    .question-type {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .question strong {
+      display: block;
+      color: var(--navy);
+    }
+
+    .question em {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .role-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .role-card {
+      overflow: hidden;
+    }
+
+    .role-name {
+      padding: 13px 16px;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 800;
+    }
+
+    .role-card:nth-child(2) .role-name {
+      background: var(--orange);
+    }
+
+    .role-card:nth-child(3) .role-name {
+      background: var(--success);
+    }
+
+    .role-card:nth-child(4) .role-name {
+      background: #8d6a9f;
+    }
+
+    .role-body {
+      padding: 16px;
+    }
+
+    .role-body p {
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .language-tag {
+      display: inline-block;
+      margin: 3px 2px 0 0;
+      padding: 4px 8px;
+      border-radius: 7px;
+      color: var(--navy);
+      background: var(--sky-strong);
+      font-family: Consolas, monospace;
+      font-size: 11px;
+    }
+
+    .review-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      counter-reset: review;
+    }
+
+    .review-card {
+      counter-increment: review;
+      padding: 18px;
+    }
+
+    .review-card::before {
+      display: block;
+      margin-bottom: 9px;
+      color: var(--orange);
+      content: "0" counter(review);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+    }
+
+    .review-card p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .decision {
+      border: 2px solid rgba(242, 107, 56, 0.35);
+      background: linear-gradient(180deg, #fff, #fff9f5);
+    }
+
+    .decision-line {
+      margin-top: 24px;
+      padding: 20px 22px;
+      border-radius: 14px;
+      color: #fff;
+      background: var(--navy);
+      font-weight: 700;
+    }
+
+    footer {
+      padding: 32px 20px 52px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .print-button {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 30;
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--orange);
+      box-shadow: 0 10px 26px rgba(194, 71, 27, 0.28);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .print-button:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 900px) {
+      .hero-meta,
+      .goal-grid,
+      .role-grid,
+      .review-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .lesson-arc {
+        grid-template-columns: 1fr;
+      }
+
+      .arc-arrow {
+        transform: rotate(90deg);
+        justify-self: center;
+      }
+
+      .task-spec {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .hero {
+        padding: 48px 20px 42px;
+      }
+
+      .hero-inner,
+      .page,
+      .nav {
+        width: min(100% - 24px, var(--content));
+      }
+
+      .hero-meta,
+      .goal-grid,
+      .task-spec,
+      .question-list,
+      .role-grid,
+      .review-grid {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 22px 18px;
+        border-radius: 16px;
+      }
+
+      .step {
+        grid-template-columns: 44px 1fr;
+      }
+
+      .step-time {
+        grid-column: 2;
+        justify-self: start;
+      }
+
+      .print-button {
+        right: 12px;
+        bottom: 12px;
+      }
+    }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 14mm;
+      }
+
+      body {
+        background: #fff;
+        color: #111;
+        font-size: 10pt;
+      }
+
+      .hero {
+        padding: 24px;
+        color: #111;
+        background: #fff;
+        border-bottom: 2px solid #173f5f;
+      }
+
+      .hero-subtitle,
+      .meta-label {
+        color: #555;
+      }
+
+      .hero-meta {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .meta-item {
+        min-height: 0;
+        padding: 10px;
+        border-color: #ccc;
+        background: #fff;
+      }
+
+      .nav-wrap,
+      .print-button {
+        display: none;
+      }
+
+      .page {
+        width: 100%;
+        padding: 20px 0;
+      }
+
+      section {
+        break-inside: avoid;
+        margin-bottom: 14px;
+        padding: 18px;
+        border: 1px solid #bbb;
+        box-shadow: none;
+      }
+
+      .section-two-banner {
+        color: #111;
+        background: #fff;
+      }
+
+      .section-two-banner h2,
+      .section-two-banner h3 {
+        color: #173f5f;
+      }
+
+      .task-spec div {
+        color: #111;
+        border-color: #bbb;
+        background: #fff;
+      }
+
+      .arc-block,
+      .decision-line {
+        color: #111;
+        border: 1px solid #bbb;
+        background: #fff !important;
+      }
+
+      .arc-block:nth-of-type(3) {
+        color: #111;
+      }
+
+      a {
+        text-decoration: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">供曹老师审阅 · 教学方案初稿</div>
+      <h1>公开课教学设计报告</h1>
+      <p class="hero-subtitle">
+        人教版八年级英语下册 Unit 5<br>
+        从时间连接词的知识建构，到“灾害现场记者采访”的真实表达
+      </p>
+      <div class="hero-meta">
+        <div class="meta-item">
+          <span class="meta-label">课程日期</span>
+          <span class="meta-value">2026年6月14日</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">课程时长</span>
+          <span class="meta-value">45分钟</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">当前进度</span>
+          <span class="meta-value">Section 1 已完成初稿</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">本次请示</span>
+          <span class="meta-value">审阅形式、节奏与互动方向</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="nav-wrap">
+    <nav class="nav" aria-label="页面目录">
+      <a href="#overview">课程定位</a>
+      <a href="#objectives">教学目标</a>
+      <a href="#timing">整体安排</a>
+      <a href="#section-one">Section 1</a>
+      <a href="#section-two">Section 2</a>
+      <a href="#assessment">评价与难点</a>
+      <a href="#review">请示事项</a>
+    </nav>
+  </div>
+
+  <main class="page">
+    <section id="overview">
+      <p class="section-kicker">01 · Course Positioning</p>
+      <h2>课程定位与核心设计思路</h2>
+      <p class="lead">
+        本课以 Tilly Smith 识别海啸征兆、帮助他人避险的故事为主情境，
+        将阅读策略、语法发现和口语互动串联为一条完整的学习路径。
+      </p>
+      <div class="callout blue">
+        <strong>核心设计：</strong>
+        学生先从文本中发现时间连接词，再通过视频和例句理解
+        <em>when</em> 与 <em>while</em>，最后在记者采访情境中用这些语言讲清楚
+        “事情发生时谁在做什么、当时怎么想、后来怎么做”。
+      </div>
+      <p>
+        课堂使用单文件 HTML 课件在希沃一体机上离线运行。学生持纸质教材，
+        屏幕用于情境呈现、任务发布、重点聚焦和答案揭示。公开课同时兼顾知识获得、
+        课堂参与和可观察的语言产出。
+      </p>
+    </section>
+
+    <section id="objectives">
+      <p class="section-kicker">02 · Learning Objectives</p>
+      <h2>教学目标</h2>
+      <div class="goal-grid">
+        <article class="goal-card">
+          <span class="goal-index">1</span>
+          <h3>语言知识</h3>
+          <p>识别常见时间连接词，理解 when 与 while 在基础叙事语境中的区别。</p>
+        </article>
+        <article class="goal-card">
+          <span class="goal-index">2</span>
+          <h3>阅读能力</h3>
+          <p>利用时间词判断事件的先后、同步和突发关系，梳理故事发展。</p>
+        </article>
+        <article class="goal-card">
+          <span class="goal-index">3</span>
+          <h3>口语表达</h3>
+          <p>在记者采访情境中，通过一问一答练习 when 与 while。具体采用中文提示还是开放表达，将在 Section 2 中另行设计。</p>
+        </article>
+        <article class="goal-card">
+          <span class="goal-index">4</span>
+          <h3>合作思维</h3>
+          <p>根据信息卡组织事实，完成分工、追问、倾听和小组展示。</p>
+        </article>
+        <article class="goal-card">
+          <span class="goal-index">5</span>
+          <h3>育人价值</h3>
+          <p>认识知识、冷静判断和清晰沟通在灾害应对中的重要作用。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="timing">
+      <p class="section-kicker">03 · Lesson Architecture</p>
+      <h2>整体教学结构与时间安排</h2>
+      <div class="callout">
+        <strong>需要重点控制：</strong>
+        当前 Section 1 逐字稿属于“完整素材版”，若逐页全部展开，时长可能超过 40 分钟。
+        为保证公开课中学生有真实输出，建议现场采用压缩版流程。
+      </div>
+      <div class="lesson-arc" aria-label="45分钟课程时间结构">
+        <div class="arc-block">
+          <span class="arc-time">18–20′</span>
+          <span class="arc-title">知识建构</span>
+          <span class="arc-desc">故事导入、时间词阅读策略、when / while</span>
+        </div>
+        <div class="arc-arrow">→</div>
+        <div class="arc-block">
+          <span class="arc-time">20–22′</span>
+          <span class="arc-title">情境采访</span>
+          <span class="arc-desc">基于多篇教材文本改编采访，通过问答反复运用 when / while</span>
+        </div>
+        <div class="arc-arrow">→</div>
+        <div class="arc-block">
+          <span class="arc-time">3–5′</span>
+          <span class="arc-title">展示收束</span>
+          <span class="arc-desc">代表展示、即时反馈、出口任务</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="section-one">
+      <p class="section-kicker">04 · Section 1</p>
+      <h2>知识点讲解：从故事线索到语言规律</h2>
+      <p>
+        Section 1 已完成 HTML 初稿，共 10 页。设计避免直接灌输语法结论，
+        而是让学生先进入故事、寻找语言线索，再从文本和动态画面中归纳规律。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>教学阶段</th>
+              <th>主要页面与活动</th>
+              <th>设计意图</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="phase">悬念导入</span></td>
+              <td>封面提出“How One Girl Saved Many Lives”；精读 Tilly 故事第一段。</td>
+              <td>以人物命运和海啸异常征兆建立情感投入与阅读动机。</td>
+            </tr>
+            <tr>
+              <td><span class="phase">概念激活</span></td>
+              <td>从“首先—然后—最后”桥接 First—Then—Finally，引出 Time Connectors。</td>
+              <td>从学生已有的中文叙事经验进入英语阅读策略。</td>
+            </tr>
+            <tr>
+              <td><span class="phase">阅读发现</span></td>
+              <td>学生阅读 p.46，画出时间词；教师用 Reveal 逐条核对代表性表达。</td>
+              <td>训练学生依靠语言标记判断事件的时间关系与顺序。</td>
+            </tr>
+            <tr>
+              <td><span class="phase">语法聚焦</span></td>
+              <td>两个视频呈现动作场景；Reveal 后对比 while 与 when 例句。</td>
+              <td>用“背景长镜头”和“关键时刻”降低语法抽象度。</td>
+            </tr>
+            <tr>
+              <td><span class="phase">迁移验证</span></td>
+              <td>阅读 Ma Li 故事，继续寻找时间词并比较两篇文本。</td>
+              <td>说明时间连接词不是单篇课文知识，而是通用的叙事工具。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout blue">
+        <strong>教学口径说明：</strong>
+        本课重点为 <em>when</em> 与 <em>while</em>（原表述中的 “well” 应为笔误）。
+        课堂以“while 常用于持续的背景动作；when 可引出关键时刻”为基础归纳，
+        同时避免将规则绝对化为固定时态公式。
+      </div>
+    </section>
+
+    <section id="section-two" class="section-two-banner">
+      <p class="section-kicker">05 · Section 2 Proposal</p>
+      <h2>情境互动练习：Disaster Newsroom</h2>
+      <p class="lead" style="color:rgba(255,255,255,.86)">
+        Section 2 拟设计为“灾害现场记者采访”。学生先阅读或回顾教材中的不同文章，
+        再分组选择不同文本进行适度改编，通过记者与当事人的一问一答练习 when 与 while。
+      </p>
+      <div class="task-spec">
+        <div><strong>基本组织</strong><span>两人一组，记者与当事人；完成后交换角色</span></div>
+        <div><strong>文本来源</strong><span>各组可选用不同课文或补充阅读，避免内容重复</span></div>
+        <div><strong>语言底线</strong><span>1 个 while 句、1 个 when 句、2 个顺序词</span></div>
+        <div><strong>支架方式</strong><span>中文提示、句型支架或开放表达，后续按学情确定</span></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="section-kicker">06 · Section 2 Procedure</p>
+      <h2>Section 2 具体课堂流程</h2>
+      <div class="steps">
+        <article class="step">
+          <div>
+            <h3>情境发布</h3>
+            <p>说明记者采访任务和语言目标；各组从教材的不同文章中选择或领取采访材料。</p>
+          </div>
+          <span class="step-time">2分钟</span>
+        </article>
+        <article class="step">
+          <div>
+            <h3>教师示范与语言拆解</h3>
+            <p>教师与一名学生示范三轮问答，现场标出 when、while 和追问方式。</p>
+          </div>
+          <span class="step-time">3分钟</span>
+        </article>
+        <article class="step">
+          <div>
+            <h3>角色信息准备</h3>
+            <p>学生先阅读所选文章，圈出时间、动作和事件信息，再将文本改编成采访问答。</p>
+          </div>
+          <span class="step-time">4分钟</span>
+        </article>
+        <article class="step">
+          <div>
+            <h3>组内排练与角色交换</h3>
+            <p>完成首轮采访后交换角色；教师巡视，重点纠正问题结构和时态搭配。</p>
+          </div>
+          <span class="step-time">5分钟</span>
+        </article>
+        <article class="step">
+          <div>
+            <h3>正式采访</h3>
+            <p>学生完成 60–90 秒连续问答。教师不逐句打断，以完整表达为先。</p>
+          </div>
+          <span class="step-time">4分钟</span>
+        </article>
+        <article class="step">
+          <div>
+            <h3>代表展示与反馈</h3>
+            <p>邀请两组展示，按照“内容完整、目标语言、互动质量、表达效果”反馈。</p>
+          </div>
+          <span class="step-time">4分钟</span>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <p class="section-kicker">07 · Language Support</p>
+      <h2>采访问题链与回答支架</h2>
+      <div class="callout blue">
+        <strong>示例说明：</strong>
+        “What were you doing when the tsunami happened?” 可以作为采访句型示范，
+        但正式活动不要求所有小组都使用 Tilly Smith 的故事。不同小组可依据教材中的不同灾害文章，
+        替换事件、人物和动作，从而形成有差异的采访内容。
+      </div>
+      <div class="question-list">
+        <article class="question">
+          <span class="question-type">询问背景</span>
+          <strong>What were you doing when the tsunami happened?</strong>
+          <em>I was ... when ...</em>
+        </article>
+        <article class="question">
+          <span class="question-type">询问同步动作</span>
+          <strong>What was happening while you were walking on the beach?</strong>
+          <em>While I was ..., ... was/were ...</em>
+        </article>
+        <article class="question">
+          <span class="question-type">询问观察</span>
+          <strong>What did you notice first? What happened next?</strong>
+          <em>First, I noticed ... Next, ...</em>
+        </article>
+        <article class="question">
+          <span class="question-type">询问判断</span>
+          <strong>What were you thinking at that moment?</strong>
+          <em>I thought ... because ...</em>
+        </article>
+        <article class="question">
+          <span class="question-type">询问行动</span>
+          <strong>What did you do when you realized it was dangerous?</strong>
+          <em>When I realized ..., I ...</em>
+        </article>
+        <article class="question">
+          <span class="question-type">询问结果与反思</span>
+          <strong>How did people get to safety? What did you learn?</strong>
+          <em>Finally, ... / I learned that ...</em>
+        </article>
+      </div>
+
+      <h3>多文本分组建议</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>材料类型</th>
+              <th>改编方向</th>
+              <th>采访练习重点</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>教材中的台风采访或对话</td>
+              <td>将原对话改编为记者采访灾害亲历者。</td>
+              <td>What were you doing when ...? / While we were ..., ...</td>
+            </tr>
+            <tr>
+              <td>Ma Li 的倒霉一天</td>
+              <td>采访 Ma Li 当天依次遇到了什么，以及她当时正在做什么。</td>
+              <td>First / Then / when / while</td>
+            </tr>
+            <tr>
+              <td>补充阅读中的灾害故事</td>
+              <td>学生先阅读，再选取人物、事件和关键时刻改编问答。</td>
+              <td>背景动作与突发事件的对比</td>
+            </tr>
+            <tr>
+              <td>其他适合的教材文章</td>
+              <td>保留原文事实，改变为一名记者和一名当事人的采访形式。</td>
+              <td>根据文章内容自然选择 when 或 while</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="assessment">
+      <p class="section-kicker">08 · Assessment & Risk Control</p>
+      <h2>评价方式与实施难点</h2>
+      <h3>四项表现性评价</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>评价维度</th>
+              <th>2分</th>
+              <th>1分</th>
+              <th>0分</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>内容完整</td>
+              <td>经过、想法、行动和结果清楚</td>
+              <td>信息基本完整</td>
+              <td>信息零散或无法理解</td>
+            </tr>
+            <tr>
+              <td>目标语言</td>
+              <td>正确使用 when、while 和顺序词</td>
+              <td>有使用但存在少量错误</td>
+              <td>未使用目标语言</td>
+            </tr>
+            <tr>
+              <td>互动质量</td>
+              <td>有倾听、回应和至少一次追问</td>
+              <td>完成基本问答</td>
+              <td>主要依赖照读或中断</td>
+            </tr>
+            <tr>
+              <td>表达效果</td>
+              <td>声音清楚、较自然、有角色感</td>
+              <td>基本清楚</td>
+              <td>难以听清或未完成</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>主要风险与应对</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>可能问题</th>
+              <th>应对策略</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>学生机械选择时态或套用固定句型，不能根据真实语境选择 when / while。</td>
+              <td>先理解人物当时的背景动作与关键事件，再决定连接词和时态；评价时关注表达是否符合语境。</td>
+            </tr>
+            <tr>
+              <td>角色扮演变成照稿朗读，缺乏真实互动。</td>
+              <td>采用问答信息差、角色交换和简单追问；准备阶段允许支架，展示阶段减少逐句照读。</td>
+            </tr>
+            <tr>
+              <td>Section 1 内容过多，挤压学生输出时间。</td>
+              <td>现场只重点讲解 4–5 个代表性时间词，其余快速核对或转为备用内容。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <p class="section-kicker">09 · Production Plan</p>
+      <h2>后续课件与材料制作安排</h2>
+      <div class="card-grid">
+        <div class="callout blue">
+          <strong>Section 1：</strong>
+          沿用当前 HTML，保留 Reveal / Reset、视频原生播放控制和离线运行。
+        </div>
+        <div class="callout blue">
+          <strong>Section 2：</strong>
+          方案确认后，从教材不同文章中筛选可改编材料，新增任务发布、采访示范、问题支架、排练和评价展示页面。
+        </div>
+        <div class="callout blue">
+          <strong>纸质支持：</strong>
+          建议制作一页双面任务单，正面为角色信息与采访框架，背面为同伴评价表。
+        </div>
+      </div>
+    </section>
+
+    <section id="review" class="decision">
+      <p class="section-kicker">10 · Items for Review</p>
+      <h2>请曹老师审阅</h2>
+      <p class="lead">
+        请重点审阅目前的 Section 1 与 Section 2 整体结构，以及公开课评价方案是否能够兼顾
+        语法运用、学生参与度和全程课堂效果。
+      </p>
+      <div class="review-grid">
+        <article class="review-card"><p>是否认可“Section 1 知识讲解 + Section 2 情境采访练习”的总体课程结构？</p></article>
+        <article class="review-card"><p>Section 2 通过不同教材文本改编采访、练习 when 与 while 的方式是否合适？</p></article>
+        <article class="review-card"><p>公开评价是否应综合考察语法运用、课堂参与度、互动真实性和整体展示效果？</p></article>
+      </div>
+      <div class="decision-line">
+        如整体方向没有问题，我将继续筛选适合分组改编的教材文章，并完成 Section 2 的具体课件、
+        采访支架和课堂逐字稿；如方向需要调整，也可在正式制作前及时修改。
+      </div>
+    </section>
+  </main>
+
+  <button class="print-button" type="button" onclick="window.print()">打印 / 导出 PDF</button>
+
+  <footer>
+    <p>公开课教学设计报告 · 人教版八年级下册 Unit 5 · 2026年6月14日</p>
+    <p>依据当前 Section 1 HTML、教师逐字稿、项目交接卡及教材内容整理</p>
+  </footer>
+</body>
+</html>
