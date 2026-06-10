@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920">
+  <title>Section 1 — Time Connectors in Action</title>
+
+  <!-- 字体引入（可选 CDN，断网时自动降级，固定 URL 不得修改） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+SC:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       1. CSS CUSTOM PROPERTIES (Design Tokens)
+       ============================================================ */
+    :root {
+      /* 背景色 */
+      --color-bg-base:     #EBF8FF;
+      --color-bg-surface:  #FFFFFF;
+      --color-bg-elevated: #F0F9FF;
+      --color-bg-overlay:  rgba(235, 248, 255, 0.88);
+
+      /* 文字色 */
+      --color-text-primary:   #1E3A5F;
+      --color-text-secondary: #0C5F8C;
+      --color-text-muted:     #5AA8CC;
+      --color-text-inverse:   #FFFFFF;
+
+      /* 强调色 */
+      --accent-when:  #FF6B35;
+      --accent-while: #00B4D8;
+      --accent-sand:  #FBBF24;
+
+      /* 语义色 */
+      --color-success: #2DCB7A;
+      --color-warning: #F59E0B;
+      --color-error:   #E63946;
+      --color-border:        #BAE6FD;
+      --color-border-active: #0EA5E9;
+
+      /* 字体栈 */
+      --font-display: Impact, 'Bebas Neue', 'Arial Black', 'Microsoft YaHei', sans-serif;
+      --font-body:    'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', Arial, sans-serif;
+      --font-mono:    Consolas, 'Space Mono', 'Courier New', monospace;
+
+      /* 字号层级（vw，适用于 Page 2–10） */
+      --font-size-display: 4.2vw;
+      --font-size-heading: 2.4vw;
+      --font-size-body:    1.5vw;
+      --font-size-small:   1.1vw;
+      --font-size-micro:   0.85vw;
+
+      /* 画布 */
+      --canvas-width:  1920px;
+      --canvas-height: 1080px;
+
+      /* 安全区域 */
+      --safe-margin-h: 80px;
+      --safe-margin-v: 60px;
+
+      /* 间距 */
+      --space-xs:  6px;
+      --space-sm:  12px;
+      --space-md:  18px;
+      --space-lg:  28px;
+      --space-xl:  44px;
+      --space-2xl: 64px;
+
+      /* 圆角 */
+      --radius-sm:   6px;
+      --radius-md:   12px;
+      --radius-lg:   20px;
+      --radius-full: 9999px;
+    }
+
+    /* ============================================================
+       2. GLOBAL RESET
+       ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--color-bg-base);
+    }
+
+    /* ============================================================
+       3. LAYOUT — Presentation wrapper & slide base
+       ============================================================ */
+    .presentation-wrapper {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 1920px;
+      height: 1080px;
+      transform-origin: center center;
+      /* transform 由 JS 动态计算 */
+    }
+
+    .slide {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      flex-direction: column;
+      padding: var(--safe-margin-v) var(--safe-margin-h);
+      box-sizing: border-box;
+      overflow: hidden;
+      /* Page 2–10 统一背景 */
+      background: linear-gradient(
+        180deg,
+        #5DADE2  0%,
+        #87CEEB 35%,
+        #BAE8F8 70%,
+        #EBF8FF 100%
+      );
+    }
+
+    .slide.is-active {
+      display: flex;
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .slide-footer {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    /* ============================================================
+       4. TYPOGRAPHY — Font assignments
+       ============================================================ */
+    body {
+      font-family: var(--font-body);
+      color: var(--color-text-primary);
+    }
+
+    /* ============================================================
+       5. COMPONENTS — Reusable UI components
+       ============================================================ */
+
+    /* 关键词高亮 Span */
+    .highlight-when  { color: var(--accent-when);  font-weight: 700; letter-spacing: 0.02em; }
+    .highlight-while { color: var(--accent-while); font-weight: 700; letter-spacing: 0.02em; }
+    .highlight-seq   { color: var(--accent-sand);  font-weight: 700; letter-spacing: 0.02em; }
+
+    /* 高亮时间词在 Reveal 条目中字号：降为 small 以确保 8 条目全部展示 */
+    .time-reveal-entry__snippet .highlight-when,
+    .time-reveal-entry__snippet .highlight-while,
+    .time-reveal-entry__snippet .highlight-seq {
+      font-size: var(--font-size-small);
+    }
+
+    /* 下一页按钮 */
+    .btn-next {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      font-weight: 700;
+      color: var(--color-text-inverse);
+      background-color: var(--accent-when);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 12px 32px;
+      cursor: pointer;
+      transition: filter 150ms ease, transform 150ms ease;
+    }
+
+    .btn-next:hover {
+      filter: brightness(1.1);
+      transform: scale(1.02);
+    }
+
+    /* Reveal 按钮 */
+    .btn-reveal {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      font-weight: 700;
+      color: var(--color-text-inverse);
+      background-color: var(--accent-sand);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 12px 32px;
+      cursor: pointer;
+      transition: filter 150ms ease, transform 150ms ease;
+    }
+
+    .btn-reveal:hover {
+      filter: brightness(1.1);
+      transform: scale(1.02);
+    }
+
+    .btn-reset {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      background-color: var(--color-bg-surface);
+      border: 2px solid var(--color-border-active);
+      border-radius: var(--radius-sm);
+      padding: 10px 28px;
+      cursor: pointer;
+      transition: background-color 150ms ease, transform 150ms ease;
+    }
+
+    .btn-reset:hover {
+      background-color: var(--color-bg-elevated);
+      transform: scale(1.02);
+    }
+
+    /* 上一页按钮 */
+    .btn-prev {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      background-color: transparent;
+      border: 2px solid var(--color-border-active);
+      border-radius: var(--radius-sm);
+      padding: 10px 28px;
+      cursor: pointer;
+      transition: background-color 150ms ease, transform 150ms ease;
+    }
+
+    .btn-prev:hover {
+      background-color: var(--color-bg-elevated);
+      transform: scale(1.02);
+    }
+
+    .btn-reveal.is-disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* 页码指示器 */
+    .slide-counter {
+      font-family: var(--font-mono);
+      font-size: var(--font-size-micro);
+      color: var(--color-text-muted);
+    }
+
+    /* 页面顶部标签 */
+    .slide-label {
+      font-family: var(--font-mono);
+      font-size: var(--font-size-micro);
+      color: var(--color-text-muted);
+      font-style: italic;
+      margin-bottom: var(--space-md);
+    }
+
+    /* 任务说明条 */
+    .task-banner {
+      background-color: var(--color-bg-elevated);
+      border: 1px solid var(--color-border-active);
+      border-left: 4px solid var(--accent-when);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-sm);
+      width: 100%;
+    }
+
+    /* 底部左侧区域（PREV + REVEAL 并排） */
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    /* 时间连词揭示列表容器 */
+    .time-reveal-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      width: 100%;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-border-active) transparent;
+    }
+
+    /* 单条时间词揭示条目 */
+    .time-reveal-entry {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-sm);
+      padding: 4px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    /* 段落位置标注 */
+    .time-reveal-entry__loc {
+      font-family: var(--font-mono);
+      font-size: var(--font-size-micro);
+      color: var(--color-text-muted);
+      min-width: 72px;
+      flex-shrink: 0;
+      padding: 2px 8px;
+      background: var(--color-bg-elevated);
+      border-radius: var(--radius-sm);
+    }
+
+    /* 句子片段 */
+    .time-reveal-entry__snippet {
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      color: var(--color-text-primary);
+      line-height: 1.6;
+    }
+
+    /* 初始提示文字 */
+    .reveal-initial-prompt {
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      color: var(--color-text-muted);
+      font-style: italic;
+      margin-bottom: var(--space-sm);
+    }
+
+    /* 语法对比列容器 */
+    .grammar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      padding: var(--space-md);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+
+    .grammar-col__title {
+      font-family: var(--font-display);
+      font-size: var(--font-size-display);
+      font-weight: 400;
+      line-height: 1.1;
+    }
+
+    .grammar-col__rule {
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      color: var(--color-text-primary);
+    }
+
+    .grammar-col__example {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      font-style: italic;
+      color: var(--color-text-muted);
+    }
+
+    .grammar-col__function {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      color: var(--color-text-secondary);
+    }
+
+    /* 对比页词表列 */
+    .compare-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      padding: var(--space-lg);
+    }
+
+    .compare-col__label {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      color: var(--color-text-muted);
+    }
+
+    .compare-col__list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .compare-col__list-item {
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      line-height: 1.8;
+    }
+
+    .compare-col__note {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      font-style: italic;
+      color: var(--accent-when);
+    }
+
+    /* 内容卡片 */
+    .content-card {
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+    }
+
+    /* 隐藏状态 */
+    .is-hidden {
+      display: none !important;
+    }
+
+    /* ============================================================
+       6. ANIMATIONS — Keyframes & animation classes
+       ============================================================ */
+    @keyframes revealUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    .anim-reveal {
+      animation: revealUp 400ms ease-out forwards;
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to   { opacity: 0; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ============================================================
+       7. PAGE STYLES — Per-slide overrides
+       ============================================================ */
+
+    /* --- Page 1: 封面页 特殊样式 --- */
+    #slide-01-cover {
+      padding: 0;
+      background: linear-gradient(
+        180deg,
+        #1A6FA8  0%,   #2E8FCC 10%,  #52A8D8 24%,  #78C3E8 42%,
+        #9ED6F0 58%,   #C2EBF8 73%,  #DDF5FF 85%,  #EBF9FF 100%
+      );
+      cursor: pointer;
+    }
+
+    /* 太阳光晕 */
+    .deco-sun {
+      position: absolute;
+      top: 48px;
+      right: 210px;
+      width: 168px;
+      height: 168px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle at center,
+        #FFFACC 0%, #FFE566 30%, #FFCC22 52%, rgba(255,200,20,0) 72%
+      );
+      box-shadow:
+        0 0  80px 40px rgba(255,220,60,0.22),
+        0 0 160px 80px rgba(255,190,30,0.10);
+      pointer-events: none;
+    }
+
+    /* 云朵共享样式 */
+    .deco-cloud {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .deco-cloud .cloud-base {
+      position: relative;
+      background: rgba(255,255,255,0.88);
+      border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(80,140,200,0.14);
+    }
+
+    .deco-cloud .cloud-base::before,
+    .deco-cloud .cloud-base::after {
+      content: '';
+      position: absolute;
+      background: rgba(255,255,255,0.88);
+      border-radius: 50%;
+    }
+
+    /* 云朵 A */
+    .cloud-a { top: 72px; left: 100px; }
+    .cloud-a .cloud-base { width: 390px; height: 96px; }
+    .cloud-a .cloud-base::before { width: 178px; height: 178px; top: -96px; left: 52px; }
+    .cloud-a .cloud-base::after  { width: 122px; height: 122px; top: -66px; left: 204px; }
+
+    /* 云朵 B */
+    .cloud-b { top: 58px; left: 740px; }
+    .cloud-b .cloud-base { width: 248px; height: 66px; }
+    .cloud-b .cloud-base::before { width: 108px; height: 108px; top: -60px; left: 34px; }
+    .cloud-b .cloud-base::after  { width: 80px;  height: 80px;  top: -44px; left: 132px; }
+
+    /* 云朵 C */
+    .cloud-c { top: 188px; right: 440px; }
+    .cloud-c .cloud-base { width: 316px; height: 80px; }
+    .cloud-c .cloud-base::before { width: 142px; height: 142px; top: -78px; left: 48px; }
+    .cloud-c .cloud-base::after  { width: 102px; height: 102px; top: -56px; left: 172px; }
+
+    /* 云朵 D */
+    .cloud-d { top: 162px; left: 448px; }
+    .cloud-d .cloud-base { width: 168px; height: 50px; opacity: 0.78; }
+    .cloud-d .cloud-base::before { width: 76px; height: 76px; top: -42px; left: 24px; }
+    .cloud-d .cloud-base::after  { width: 56px; height: 56px; top: -30px; left: 90px; }
+
+    /* 海洋面板 */
+    .deco-ocean {
+      position: absolute;
+      bottom: 185px;
+      left: 0;
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(
+        180deg,
+        #1BADD4 0%, #1080B0 22%, #085E8A 50%, #054870 76%, #033358 100%
+      );
+      pointer-events: none;
+    }
+
+    .deco-ocean::after {
+      content: '';
+      position: absolute;
+      inset: 35px 0 0 0;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent 0px, transparent 36px,
+        rgba(255,255,255,0.04) 37px, rgba(255,255,255,0.04) 38px
+      );
+    }
+
+    .ocean-wave-top {
+      position: absolute;
+      top: -54px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+    }
+
+    /* 沙滩条带 */
+    .deco-beach {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 185px;
+      background: linear-gradient(
+        180deg,
+        #FDE68A 0%, #F5C030 44%, #E8A818 78%, #D49010 100%
+      );
+      pointer-events: none;
+    }
+
+    .beach-wave-top {
+      position: absolute;
+      top: -44px;
+      left: 0;
+      width: 100%;
+      height: 50px;
+    }
+
+    /* 文字内容层 */
+    .slide-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 185px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    /* Page 1 文字排版（固定 px 值） */
+    .p1-title {
+      font-family: var(--font-display);
+      font-size: 100px;
+      font-weight: 400;
+      color: #1C3F6A;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .p1-divider {
+      width: 180px;
+      height: 5px;
+      margin: 30px auto 34px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #FF6B35 0%, #00B4D8 100%);
+      box-shadow: 0 2px 14px rgba(0, 180, 216, 0.40);
+    }
+
+    .p1-subtitle {
+      font-family: var(--font-body);
+      font-size: 38px;
+      font-weight: 500;
+      color: #FFFFFF;
+      text-shadow: 0 2px 8px rgba(0,20,70,0.40);
+      background: rgba(5, 35, 85, 0.38);
+      border: 1.5px solid rgba(255, 255, 255, 0.42);
+      border-radius: 999px;
+      padding: 14px 56px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      letter-spacing: 0.06em;
+    }
+
+    /* 底部信息条 */
+    .footer-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 185px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 58px 80px 32px;
+      z-index: 20;
+    }
+
+    .p1-footer {
+      font-family: var(--font-mono);
+      font-size: 26px;
+      font-weight: 700;
+      color: #6B4510;
+    }
+
+    .p1-counter {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 400;
+      color: #6B4510;
+      opacity: 0.65;
+    }
+
+    /* --- Page 2: 钩子页 --- */
+    #slide-02-hook .slide-body {
+      justify-content: center;
+      gap: var(--space-md);
+    }
+
+    .p2-instruction {
+      font-family: var(--font-body);
+      font-size: var(--font-size-micro);
+      font-style: italic;
+      color: var(--color-text-muted);
+    }
+
+    .p2-paragraph {
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      color: var(--color-text-primary);
+      line-height: 1.7;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+    }
+
+    .p2-suspense {
+      font-family: var(--font-body);
+      font-size: var(--font-size-heading);
+      color: var(--accent-when);
+      font-weight: 500;
+      text-align: center;
+    }
+
+    /* --- Page 2.5: Time Connectors 桥接页 --- */
+    #slide-02b-bridge .slide-body {
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xl);
+      text-align: center;
+    }
+
+    .bridge-question {
+      max-width: 1480px;
+      font-family: var(--font-body);
+      font-size: var(--font-size-heading);
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--color-text-primary);
+    }
+
+    .bridge-map {
+      display: grid;
+      grid-template-columns: minmax(300px, 420px) 110px minmax(300px, 420px);
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-lg);
+      width: 100%;
+    }
+
+    .bridge-col {
+      display: grid;
+      grid-template-rows: auto repeat(3, auto);
+      gap: var(--space-md);
+      align-items: center;
+      justify-items: center;
+    }
+
+    .bridge-col__title {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      font-weight: 700;
+      color: var(--color-text-secondary);
+    }
+
+    .bridge-col__word {
+      min-width: 280px;
+      padding: var(--space-sm) var(--space-lg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-bg-surface);
+      box-shadow: 0 10px 24px rgba(12, 95, 140, 0.10);
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      line-height: 1.35;
+      text-align: center;
+      color: var(--color-text-muted);
+    }
+
+    .bridge-col__word--english {
+      color: var(--accent-while);
+      font-weight: 700;
+    }
+
+    .bridge-arrow {
+      align-self: center;
+      color: var(--color-text-muted);
+      font-family: var(--font-display);
+      font-size: var(--font-size-display);
+      line-height: 1;
+      text-align: center;
+    }
+
+    .concept-pill {
+      border: 2px solid var(--accent-sand);
+      border-radius: var(--radius-full);
+      padding: var(--space-sm) var(--space-lg);
+      background: var(--color-bg-surface);
+      box-shadow: 0 14px 32px rgba(251, 191, 36, 0.20);
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+
+    .bridge-footer-note {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      font-style: italic;
+      line-height: 1.45;
+      color: var(--color-text-muted);
+    }
+
+    /* --- Page 3: 阅读指令页 --- */
+    #slide-03-read-tilly .slide-body {
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-md);
+      text-align: center;
+    }
+
+    .p3-main {
+      font-family: var(--font-body);
+      font-size: var(--font-size-heading);
+      color: var(--color-text-primary);
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .p3-task-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      align-items: center;
+      max-width: 1500px;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-left: 4px solid var(--accent-when);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg) var(--space-xl);
+      box-shadow: 0 12px 28px rgba(12, 95, 140, 0.10);
+    }
+
+    .p3-subtask {
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--color-text-primary);
+    }
+
+    .p3-explain {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      line-height: 1.55;
+      color: var(--color-text-secondary);
+    }
+
+    .p3-cue {
+      color: var(--accent-when);
+      font-weight: 700;
+    }
+
+    .p3-hint {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+
+    /* --- Page 4 & 9: Reveal 页 --- */
+    #slide-04-tilly-reveal .slide-body,
+    #slide-09-mali-reveal .slide-body {
+      gap: var(--space-sm);
+      padding-top: var(--space-xs);
+    }
+
+    #slide-04-tilly-reveal .time-reveal-entry__snippet .highlight-when,
+    #slide-04-tilly-reveal .time-reveal-entry__snippet .highlight-while,
+    #slide-04-tilly-reveal .time-reveal-entry__snippet .highlight-seq {
+      font-size: calc(var(--font-size-body) * 1.18);
+    }
+
+    /* --- Page 5: Reading Strategy Box --- */
+    #slide-05-strategy .slide-body {
+      justify-content: center;
+      gap: var(--space-md);
+    }
+
+    .p5-strategy-box {
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-left: 4px solid var(--accent-sand);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .p5-strategy-title {
+      font-family: var(--font-body);
+      font-size: var(--font-size-heading);
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+
+    .p5-strategy-quote {
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      font-style: italic;
+      color: var(--color-text-secondary);
+      line-height: 1.7;
+      border-left: 3px solid var(--color-border-active);
+      padding-left: var(--space-md);
+    }
+
+    .p5-word-list {
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      color: var(--color-text-primary);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .p5-separator {
+      color: var(--color-text-muted);
+      font-weight: 400;
+    }
+
+    .p5-question {
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      color: var(--color-text-secondary);
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* --- Page 6: KP2 引出页 --- */
+    #slide-06-kp2-intro .slide-body {
+      justify-content: center;
+      gap: var(--space-lg);
+    }
+
+    .p6-sentence {
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      color: var(--color-text-primary);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-lg);
+      line-height: 1.6;
+    }
+
+    .p6-video-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-lg);
+      width: 100%;
+    }
+
+    .p6-video-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .p6-video {
+      display: block;
+      width: 100%;
+      height: 320px;
+      object-fit: contain;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-bg-surface);
+    }
+
+    .p6-analysis {
+      display: none;
+      flex-direction: column;
+      gap: var(--space-md);
+      width: 100%;
+    }
+
+    #slide-06-kp2-intro.is-revealed .p6-analysis {
+      display: flex;
+    }
+
+    #slide-06-kp2-intro.is-revealed .p6-marker-while {
+      color: var(--accent-while);
+      font-weight: 700;
+    }
+
+    #slide-06-kp2-intro.is-revealed .p6-marker-when {
+      color: var(--accent-when);
+      font-weight: 700;
+    }
+
+    #slide-06-kp2-intro.is-revealed .p6-continuous-action {
+      text-decoration: underline;
+      text-decoration-thickness: 3px;
+      text-underline-offset: 6px;
+    }
+
+    #slide-06-kp2-intro.is-revealed .p6-instant-action {
+      font-weight: 700;
+    }
+
+    .p6-contrast-q {
+      font-family: var(--font-body);
+      font-size: var(--font-size-heading);
+      color: var(--accent-when);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* --- Page 7: KP2 语法小结页 --- */
+    #slide-07-kp2-summary .slide-body {
+      justify-content: center;
+      gap: var(--space-md);
+    }
+
+    .grammar-cols {
+      display: flex;
+      gap: var(--space-lg);
+      align-items: stretch;
+    }
+
+    .grammar-divider {
+      width: 2px;
+      background: var(--color-border);
+      flex-shrink: 0;
+      align-self: stretch;
+    }
+
+    .p7-summary {
+      font-family: var(--font-body);
+      font-size: var(--font-size-heading);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      text-align: center;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-xl);
+    }
+
+    /* --- Page 8: Ma Li 过渡页 --- */
+    #slide-08-read-mali .slide-body {
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-md);
+      text-align: center;
+    }
+
+    .p8-main-lines {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .p8-line {
+      font-family: var(--font-display);
+      font-size: var(--font-size-display);
+      color: var(--color-text-inverse);
+      font-weight: 400;
+      text-shadow: 0 2px 12px rgba(0,60,120,0.30);
+    }
+
+    .p8-sub {
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      color: var(--color-text-secondary);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-xl);
+    }
+
+    .p8-hint {
+      font-family: var(--font-body);
+      font-size: var(--font-size-heading);
+      color: var(--accent-when);
+      font-weight: 500;
+    }
+
+    /* --- Page 10: 两篇对比 + 收尾 --- */
+    #slide-10-comparison .slide-body {
+      gap: var(--space-md);
+    }
+
+    .p10-title {
+      font-family: var(--font-body);
+      font-size: var(--font-size-heading);
+      font-weight: 700;
+      color: #FFFFFF;
+      text-align: center;
+      text-shadow: 0 2px 8px rgba(0,60,120,0.25);
+    }
+
+    .compare-cols {
+      display: flex;
+      flex: 1;
+      gap: 0;
+      align-items: stretch;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .compare-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      padding: var(--space-md);
+    }
+
+    .compare-divider {
+      width: 1px;
+      background: var(--color-border);
+      flex-shrink: 0;
+    }
+
+    .compare-col__label {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-xs);
+    }
+
+    .compare-col__list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .compare-col__list-item {
+      font-family: var(--font-body);
+      font-size: var(--font-size-body);
+      line-height: 1.5;
+    }
+
+    .compare-col__note {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      font-style: italic;
+      color: var(--accent-when);
+      margin-top: var(--space-xs);
+    }
+
+    .p10-summary {
+      font-family: var(--font-display);
+      font-size: var(--font-size-display);
+      color: var(--accent-when);
+      font-weight: 400;
+      text-align: center;
+      text-shadow: 0 2px 8px rgba(255,107,53,0.20);
+    }
+
+    .p10-counter-only {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="presentation-wrapper">
+
+    <!-- ============================================================
+         Page 1: 封面页
+         ============================================================ -->
+    <section class="slide is-active" id="slide-01-cover" data-slide="1">
+      <!-- 装饰层 -->
+      <div class="deco-sun" aria-hidden="true"></div>
+      <div class="deco-cloud cloud-a" aria-hidden="true"><div class="cloud-base"></div></div>
+      <div class="deco-cloud cloud-b" aria-hidden="true"><div class="cloud-base"></div></div>
+      <div class="deco-cloud cloud-c" aria-hidden="true"><div class="cloud-base"></div></div>
+      <div class="deco-cloud cloud-d" aria-hidden="true"><div class="cloud-base"></div></div>
+
+      <!-- 海洋面板 -->
+      <div class="deco-ocean" aria-hidden="true">
+        <svg class="ocean-wave-top" viewBox="0 0 1920 60"
+             preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,40
+            C 120,16  240,54  360,34
+            C 480,14  600,50  720,30
+            C 840,10  960,48 1080,28
+            C1200,8  1320,46 1440,26
+            C1560,6  1680,44 1800,24
+            C1860,14 1890,32 1920,20
+            L1920,60 L0,60 Z"
+            fill="#1BADD4"/>
+        </svg>
+      </div>
+
+      <!-- 沙滩条带 -->
+      <div class="deco-beach" aria-hidden="true">
+        <svg class="beach-wave-top" viewBox="0 0 1920 50"
+             preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,32
+            C 120,10  240,44  360,26
+            C 480,8   600,40  720,22
+            C 840,4   960,36 1080,20
+            C1200,4  1320,34 1440,18
+            C1560,2  1680,30 1800,16
+            C1860,8  1890,22 1920,14
+            L1920,50 L0,50 Z"
+            fill="#FDE68A"/>
+          <path d="M0,32
+            C 120,10  240,44  360,26
+            C 480,8   600,40  720,22
+            C 840,4   960,36 1080,20
+            C1200,4  1320,34 1440,18
+            C1560,2  1680,30 1800,16
+            C1860,8  1890,22 1920,14"
+            fill="none"
+            stroke="rgba(255,255,255,0.60)"
+            stroke-width="4"/>
+        </svg>
+      </div>
+
+      <!-- 文字内容层 -->
+      <div class="slide-content">
+        <h1 class="p1-title">How One Girl Saved Many Lives</h1>
+        <div class="p1-divider" aria-hidden="true"></div>
+        <p class="p1-subtitle">And the words that made it possible</p>
+      </div>
+
+      <!-- 底部信息条 -->
+      <div class="footer-bar">
+        <span class="p1-footer">Grade 8 · Unit 5 · June 14, 2026</span>
+        <span class="p1-counter">1 / 10</span>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         Page 2: 钩子页
+         ============================================================ -->
+    <section class="slide" id="slide-02-hook" data-slide="2">
+      <div class="slide-body">
+        <p class="p2-instruction slide-label">p.46 · Paragraph 1 only</p>
+
+        <p class="p2-paragraph">
+          On 26 December 2004, Tilly Smith, a 10-year-old English schoolgirl,
+          and her family were on holiday in Phuket, Thailand. Everyone was
+          enjoying the beautiful weather that morning. Some people were swimming
+          in the sea, and some were relaxing on the beach. But while Tilly was
+          walking along the beach with her family, she noticed something strange.
+          Thick white froth was forming on top of the waves. Next, she saw that
+          the waves were coming in instead of going out.
+        </p>
+
+        <p class="p2-suspense">What did Tilly notice? What might happen next?</p>
+      </div>
+
+      <footer class="slide-footer">
+        <button class="btn-prev" data-target="1">← PREV</button>
+        <div class="footer-right">
+          <span class="slide-counter">2 / 10</span>
+          <button class="btn-next" data-target="2.5">NEXT →</button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         Page 2.5: Time Connectors 桥接页
+         ============================================================ -->
+    <section class="slide" id="slide-02b-bridge" data-slide="2.5">
+      <div class="slide-body">
+        <h1 class="bridge-question">讲故事的时候，怎么让别人知道事情发生的先后顺序？</h1>
+
+        <div class="bridge-map anim-reveal" aria-label="中文时间词和英文时间连接词对照">
+          <div class="bridge-col">
+            <p class="bridge-col__title">中文</p>
+            <p class="bridge-col__word">首先</p>
+            <p class="bridge-col__word">然后</p>
+            <p class="bridge-col__word">最后</p>
+          </div>
+
+          <div class="bridge-arrow" aria-hidden="true">→</div>
+
+          <div class="bridge-col">
+            <p class="bridge-col__title">English</p>
+            <p class="bridge-col__word bridge-col__word--english">First</p>
+            <p class="bridge-col__word bridge-col__word--english">Then</p>
+            <p class="bridge-col__word bridge-col__word--english">Finally</p>
+          </div>
+        </div>
+
+        <div class="concept-pill anim-reveal">Time Connectors · 时间连接词</div>
+      </div>
+
+      <footer class="slide-footer">
+        <p class="bridge-footer-note">文章里还有更多——有些表示“同时发生”，有些表示“就在那一刻”…</p>
+        <div class="footer-right">
+          <span class="slide-counter">2.5 / 10</span>
+          <button class="btn-next" data-target="3">NEXT →</button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         Page 3: 阅读指令页（Tilly）
+         ============================================================ -->
+    <section class="slide" id="slide-03-read-tilly" data-slide="3">
+      <div class="slide-body">
+        <p class="slide-label">p.46 · Full Story · 找 Time Connectors</p>
+
+        <div class="p3-task-card">
+          <p class="p3-main">Read the full story on p.46.</p>
+
+          <p class="p3-subtask">Find and underline <span class="p3-cue">ALL the Time Connectors.</span></p>
+
+          <p class="p3-explain">
+            任何帮你知道“什么时候”、“什么顺序”、“同时发生还是前后发生”的词，全部画出来。
+          </p>
+
+          <p class="p3-explain">
+            不只是 <span class="highlight-seq">first</span> / <span class="highlight-seq">then</span> / <span class="highlight-seq">finally</span>，那些不太明显的，也要找。
+          </p>
+        </div>
+
+        <p class="p3-hint">Which words help you know the ORDER of events?</p>
+      </div>
+
+      <footer class="slide-footer">
+        <button class="btn-prev" data-target="2.5">← PREV</button>
+        <div class="footer-right">
+          <span class="slide-counter">3 / 10</span>
+          <button class="btn-next" data-target="4">NEXT →</button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         Page 4: Tilly 时间词 Reveal 页
+         ============================================================ -->
+    <section class="slide" id="slide-04-tilly-reveal" data-slide="4">
+      <div class="slide-body">
+        <p class="slide-label">Tilly's Story · p.46</p>
+
+        <div class="reveal-initial-prompt" id="p4-initial-prompt">
+          <p>What did you find?</p>
+        </div>
+
+        <div class="time-reveal-list" id="p4-reveal-list">
+
+          <div class="time-reveal-entry is-hidden" id="p4-entry-1">
+            <span class="time-reveal-entry__loc">Para 1</span>
+            <span class="time-reveal-entry__snippet">
+              <span class="highlight-seq">On 26 December 2004</span>
+              , Tilly Smith, a 10-year-old...
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p4-entry-2">
+            <span class="time-reveal-entry__loc">Para 1</span>
+            <span class="time-reveal-entry__snippet">
+              But <span class="highlight-while">while</span>
+              Tilly was walking along the beach...
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p4-entry-3">
+            <span class="time-reveal-entry__loc">Para 1</span>
+            <span class="time-reveal-entry__snippet">
+              <span class="highlight-seq">Next</span>
+              , she saw that the waves...
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p4-entry-4">
+            <span class="time-reveal-entry__loc">Para 2</span>
+            <span class="time-reveal-entry__snippet">
+              <span class="highlight-seq">Just then</span>
+              , she remembered something important.
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p4-entry-5">
+            <span class="time-reveal-entry__loc">Para 2</span>
+            <span class="time-reveal-entry__snippet">
+              <span class="highlight-seq">Two weeks before</span>
+              , her geography teacher had explained...
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p4-entry-6">
+            <span class="time-reveal-entry__loc">Para 3</span>
+            <span class="time-reveal-entry__snippet">
+              <span class="highlight-seq">Finally</span>
+              , her mother decided to continue...
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p4-entry-7">
+            <span class="time-reveal-entry__loc">Para 4</span>
+            <span class="time-reveal-entry__snippet">
+              ...running as fast as they could
+              <span class="highlight-when">when</span>
+              they saw a huge wall of water.
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p4-entry-8">
+            <span class="time-reveal-entry__loc">Para 5</span>
+            <span class="time-reveal-entry__snippet">
+              ...made it to safety
+              <span class="highlight-seq">just as</span>
+              the water hit the hotel.
+            </span>
+          </div>
+
+        </div><!-- /.time-reveal-list -->
+      </div><!-- /.slide-body -->
+
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <button class="btn-prev" data-target="3">← PREV</button>
+          <button class="btn-reveal" id="p4-btn-reveal">REVEAL ▶</button>
+          <button class="btn-reset" id="p4-btn-reset">RESET</button>
+        </div>
+        <div class="footer-right">
+          <span class="slide-counter">4 / 10</span>
+          <button class="btn-next" data-target="5">NEXT →</button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         Page 5: Reading Strategy Box
+         ============================================================ -->
+    <section class="slide" id="slide-05-strategy" data-slide="5">
+      <div class="slide-body">
+        <p class="slide-label">Reading Strategy · p.47</p>
+
+        <div class="p5-strategy-box">
+          <h2 class="p5-strategy-title">Understanding the order of events</h2>
+
+          <p class="p5-strategy-quote">
+            Look out for words and phrases that tell you <span class="highlight-when">when</span> something happens.
+          </p>
+
+          <div class="p5-word-list">
+            <span class="highlight-seq">next</span>
+            <span class="p5-separator">·</span>
+            <span class="highlight-seq">then</span>
+            <span class="p5-separator">·</span>
+            <span class="highlight-seq">finally</span>
+            <span class="p5-separator">·</span>
+            <span class="highlight-when">when</span>
+            <span class="p5-separator">·</span>
+            <span class="highlight-while">while</span>
+            <span class="p5-separator">·</span>
+            <span class="highlight-seq">two weeks before</span>
+          </div>
+        </div>
+
+        <p class="p5-question">Which of these did you just find in Tilly's story?</p>
+      </div>
+
+      <footer class="slide-footer">
+        <button class="btn-prev" data-target="4">← PREV</button>
+        <div class="footer-right">
+          <span class="slide-counter">5 / 10</span>
+          <button class="btn-next" data-target="6">NEXT →</button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         Page 6: KP2 引出页（when / while 对比）
+         ============================================================ -->
+    <section class="slide" id="slide-06-kp2-intro" data-slide="6">
+      <div class="slide-body">
+        <p class="slide-label">when vs. while</p>
+
+        <div class="p6-video-grid">
+          <div class="p6-video-card">
+          <video class="p6-video" id="p6-video-while" muted playsinline controls preload="metadata">
+            <source src="while Tilly was walking along the beach.mp4" type="video/mp4">
+          </video>
+          </div>
+
+          <div class="p6-video-card">
+          <video class="p6-video" id="p6-video-when" muted playsinline controls preload="metadata">
+            <source src="when they saw a huge wall of water..mp4" type="video/mp4">
+          </video>
+          </div>
+        </div>
+
+        <div class="p6-analysis">
+          <!-- 句子 1（while） -->
+          <p class="p6-sentence">
+            But <span class="p6-marker-while">while</span>
+            Tilly <span class="p6-continuous-action">was walking along the beach</span>,
+            she noticed something strange.
+          </p>
+
+          <!-- 中间引导问题 -->
+          <p class="p6-contrast-q">What's the difference?</p>
+
+          <!-- 句子 2（when） -->
+          <p class="p6-sentence">
+            People were screaming and running
+            <span class="p6-marker-when">when</span>
+            they <span class="p6-instant-action">saw</span> a huge wall of water.
+          </p>
+        </div>
+      </div>
+
+      <footer class="slide-footer">
+        <button class="btn-prev" data-target="5">← PREV</button>
+        <div class="footer-right">
+          <button class="btn-reset" id="p6-btn-reset">RESET</button>
+          <button class="btn-reveal" id="p6-btn-reveal">REVEAL ▶</button>
+          <span class="slide-counter">6 / 10</span>
+          <button class="btn-next" data-target="7">NEXT →</button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         Page 7: KP2 语法小结页
+         ============================================================ -->
+    <section class="slide" id="slide-07-kp2-summary" data-slide="7">
+      <div class="slide-body">
+        <p class="slide-label">Grammar Focus · when vs. while</p>
+
+        <div class="grammar-cols">
+          <!-- while 列 -->
+          <div class="grammar-col">
+            <p class="grammar-col__title" style="color: var(--accent-while);">while</p>
+            <p class="grammar-col__rule">+ continuous action (was doing)</p>
+            <p class="grammar-col__example">While she was walking, she noticed...</p>
+            <p class="grammar-col__function">= the background / stage</p>
+          </div>
+
+          <div class="grammar-divider"></div>
+
+          <!-- when 列 -->
+          <div class="grammar-col">
+            <p class="grammar-col__title" style="color: var(--accent-when);">when</p>
+            <p class="grammar-col__rule">+ continuous OR instant action</p>
+            <p class="grammar-col__example">When they saw the wave, they ran.</p>
+            <p class="grammar-col__function">= the trigger / moment</p>
+          </div>
+        </div>
+
+        <p class="p7-summary">while = the stage.&nbsp;&nbsp;&nbsp;when = what happens on that stage.</p>
+      </div>
+
+      <footer class="slide-footer">
+        <button class="btn-prev" data-target="6">← PREV</button>
+        <div class="footer-right">
+          <span class="slide-counter">7 / 10</span>
+          <button class="btn-next" data-target="8">NEXT →</button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         Page 8: Ma Li 过渡页 + 阅读指令
+         ============================================================ -->
+    <section class="slide" id="slide-08-read-mali" data-slide="8">
+      <div class="slide-body">
+        <p class="slide-label">p.49 · Ma Li's Story</p>
+
+        <div class="p8-main-lines">
+          <p class="p8-line">Now turn to p.49.</p>
+          <p class="p8-line">Read Ma Li's story (3a).</p>
+        </div>
+
+        <p class="p8-sub">Underline the time words.&nbsp;&nbsp;Number the events in 3a.</p>
+
+        <p class="p8-hint">Same trick. Same tools?</p>
+      </div>
+
+      <footer class="slide-footer">
+        <button class="btn-prev" data-target="7">← PREV</button>
+        <div class="footer-right">
+          <span class="slide-counter">8 / 10</span>
+          <button class="btn-next" data-target="9">NEXT →</button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         Page 9: Ma Li 时间词 Reveal 页
+         ============================================================ -->
+    <section class="slide" id="slide-09-mali-reveal" data-slide="9">
+      <div class="slide-body">
+        <p class="slide-label">Ma Li's Story · p.49</p>
+
+        <div class="reveal-initial-prompt" id="p9-initial-prompt">
+          <p>What did you find this time?</p>
+        </div>
+
+        <div class="time-reveal-list" id="p9-reveal-list">
+
+          <div class="time-reveal-entry is-hidden" id="p9-entry-1">
+            <span class="time-reveal-entry__loc">Para 1</span>
+            <span class="time-reveal-entry__snippet">
+              <span class="highlight-seq">Last Friday</span>
+              started terribly.
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p9-entry-2">
+            <span class="time-reveal-entry__loc">Para 1</span>
+            <span class="time-reveal-entry__snippet">
+              <span class="highlight-seq">First</span>
+              , my alarm clock didn't go off...
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p9-entry-3">
+            <span class="time-reveal-entry__loc">Para 2</span>
+            <span class="time-reveal-entry__snippet">
+              ...reviewing my notes
+              <span class="highlight-while">while</span>
+              I was waiting for my bus.
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p9-entry-4">
+            <span class="time-reveal-entry__loc">Para 2</span>
+            <span class="time-reveal-entry__snippet">
+              <span class="highlight-seq">All of a sudden</span>
+              , thunder rolled across the sky.
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p9-entry-5">
+            <span class="time-reveal-entry__loc">Para 2</span>
+            <span class="time-reveal-entry__snippet">
+              <span class="highlight-seq">Then</span>
+              it started to pour.
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p9-entry-6">
+            <span class="time-reveal-entry__loc">Para 3</span>
+            <span class="time-reveal-entry__snippet">
+              <span class="highlight-seq">By the time</span>
+              the bus came, I was cold and wet.
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p9-entry-7">
+            <span class="time-reveal-entry__loc">Para 3</span>
+            <span class="time-reveal-entry__snippet">
+              ...worrying about the test
+              <span class="highlight-when">when</span>
+              the bus driver said we'd be late.
+            </span>
+          </div>
+
+          <div class="time-reveal-entry is-hidden" id="p9-entry-8">
+            <span class="time-reveal-entry__loc">Para 4</span>
+            <span class="time-reveal-entry__snippet">
+              <span class="highlight-when">When</span>
+              I finally reached my classroom...
+            </span>
+          </div>
+
+        </div><!-- /.time-reveal-list -->
+      </div><!-- /.slide-body -->
+
+      <footer class="slide-footer">
+        <div class="footer-left">
+          <button class="btn-prev" data-target="8">← PREV</button>
+          <button class="btn-reveal" id="p9-btn-reveal">REVEAL ▶</button>
+          <button class="btn-reset" id="p9-btn-reset">RESET</button>
+        </div>
+        <div class="footer-right">
+          <span class="slide-counter">9 / 10</span>
+          <button class="btn-next" data-target="10">NEXT →</button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ============================================================
+         Page 10: 两篇对比 + Section 1 收尾
+         ============================================================ -->
+    <section class="slide" id="slide-10-comparison" data-slide="10">
+      <div class="slide-body">
+        <h2 class="p10-title">Two Stories. Same Language.</h2>
+
+        <div class="compare-cols">
+          <!-- Tilly 列 -->
+          <div class="compare-col">
+            <p class="compare-col__label">Tilly's story</p>
+            <div class="compare-col__list">
+              <p class="compare-col__list-item"><span class="highlight-seq">On 26 December 2004</span></p>
+              <p class="compare-col__list-item"><span class="highlight-while">while</span></p>
+              <p class="compare-col__list-item"><span class="highlight-seq">Next</span></p>
+              <p class="compare-col__list-item"><span class="highlight-seq">Just then</span></p>
+              <p class="compare-col__list-item"><span class="highlight-seq">Two weeks before</span></p>
+              <p class="compare-col__list-item"><span class="highlight-seq">Finally</span></p>
+              <p class="compare-col__list-item"><span class="highlight-when">when</span></p>
+              <p class="compare-col__list-item"><span class="highlight-seq">just as</span></p>
+            </div>
+            <p class="compare-col__note">→ background vs. foreground</p>
+          </div>
+
+          <div class="compare-divider"></div>
+
+          <!-- Ma Li 列 -->
+          <div class="compare-col">
+            <p class="compare-col__label">Ma Li's story</p>
+            <div class="compare-col__list">
+              <p class="compare-col__list-item"><span class="highlight-seq">Last Friday</span></p>
+              <p class="compare-col__list-item"><span class="highlight-seq">First</span></p>
+              <p class="compare-col__list-item"><span class="highlight-while">while</span></p>
+              <p class="compare-col__list-item"><span class="highlight-seq">All of a sudden</span></p>
+              <p class="compare-col__list-item"><span class="highlight-seq">Then</span></p>
+              <p class="compare-col__list-item"><span class="highlight-seq">By the time</span></p>
+              <p class="compare-col__list-item"><span class="highlight-when">when</span></p>
+              <p class="compare-col__list-item"><span class="highlight-when">When</span></p>
+            </div>
+            <p class="compare-col__note">→ step by step</p>
+          </div>
+        </div>
+
+        <p class="p10-summary">Time words = the skeleton of a story.</p>
+      </div>
+
+      <!-- Page 10 没有 NEXT 按钮，但保留 PREV -->
+      <footer class="slide-footer">
+        <button class="btn-prev" data-target="9">← PREV</button>
+        <span class="slide-counter">10 / 10</span>
+      </footer>
+    </section>
+
+  </div><!-- /.presentation-wrapper -->
+
+  <script>
+    /* === 全局状态 === */
+    const AppState = {
+      currentSlide: 1,
+      totalSlides: 10,
+
+      // Page 4 状态（Tilly Reveal）
+      slide04: {
+        revealStep: 0,   // 0 = 无条目显示，1–8 = 已显示条目数
+        maxStep: 8
+      },
+
+      // Page 9 状态（Ma Li Reveal）
+      slide09: {
+        revealStep: 0,
+        maxStep: 8
+      }
+    };
+
+    /* === 16:9 缩放函数 === */
+    function scalePresentation() {
+      const wrapper = document.querySelector('.presentation-wrapper');
+      const scaleX = window.innerWidth / 1920;
+      const scaleY = window.innerHeight / 1080;
+      const scale = Math.min(scaleX, scaleY);
+      wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+
+    window.addEventListener('resize', scalePresentation);
+
+    /* === 页面切换函数 === */
+    function goToSlide(targetSlide) {
+      if (targetSlide < 1 || targetSlide > AppState.totalSlides) return;
+
+      const currentEl = document.querySelector('.slide.is-active');
+      const targetEl = document.querySelector(`[data-slide="${targetSlide}"]`);
+
+      if (!currentEl || !targetEl || currentEl === targetEl) return;
+
+      currentEl.querySelectorAll('video').forEach(video => video.pause());
+
+      /* 淡出当前页 */
+      currentEl.style.animation = 'fadeOut 200ms ease forwards';
+
+      setTimeout(() => {
+        currentEl.classList.remove('is-active');
+        currentEl.style.animation = '';
+
+        /* 淡入新页 */
+        targetEl.classList.add('is-active');
+        targetEl.style.animation = 'fadeIn 300ms ease forwards';
+
+        setTimeout(() => {
+          targetEl.style.animation = '';
+        }, 300);
+
+        AppState.currentSlide = targetSlide;
+      }, 200);
+    }
+
+    /* === Reveal 通用函数 === */
+    /**
+     * 揭示下一条时间词条目
+     * @param {number} slideNum - 4 或 9
+     */
+    function revealNextEntry(slideNum) {
+      const stateKey = `slide0${slideNum}`;
+      const state = AppState[stateKey];
+
+      if (state.revealStep >= state.maxStep) return;
+
+      state.revealStep++;
+
+      /* 显示对应条目 */
+      const entryEl = document.getElementById(`p${slideNum}-entry-${state.revealStep}`);
+      if (entryEl) {
+        entryEl.classList.remove('is-hidden');
+        entryEl.classList.add('anim-reveal');
+
+        /* 隐藏初始提示文字（第一次 Reveal 后） */
+        if (state.revealStep === 1) {
+          const promptEl = document.getElementById(`p${slideNum}-initial-prompt`);
+          if (promptEl) promptEl.classList.add('is-hidden');
+        }
+      }
+
+      /* 所有条目揭示完毕，禁用 REVEAL 按钮 */
+      if (state.revealStep >= state.maxStep) {
+        const btnReveal = document.getElementById(`p${slideNum}-btn-reveal`);
+        if (btnReveal) {
+          btnReveal.classList.add('is-disabled');
+          btnReveal.disabled = true;
+        }
+      }
+    }
+
+    function resetRevealEntries(slideNum) {
+      const state = AppState[`slide0${slideNum}`];
+      state.revealStep = 0;
+
+      document.querySelectorAll(`#p${slideNum}-reveal-list .time-reveal-entry`).forEach(entry => {
+        entry.classList.add('is-hidden');
+        entry.classList.remove('anim-reveal');
+      });
+
+      const promptEl = document.getElementById(`p${slideNum}-initial-prompt`);
+      if (promptEl) promptEl.classList.remove('is-hidden');
+
+      const listEl = document.getElementById(`p${slideNum}-reveal-list`);
+      if (listEl) listEl.scrollTop = 0;
+
+      const btnReveal = document.getElementById(`p${slideNum}-btn-reveal`);
+      btnReveal.classList.remove('is-disabled');
+      btnReveal.disabled = false;
+    }
+
+    /* === 事件绑定（在 DOMContentLoaded 后注册） === */
+    document.addEventListener('DOMContentLoaded', () => {
+
+      /* Page 1：整页点击跳转至 Page 2 */
+      document.getElementById('slide-01-cover').addEventListener('click', () => {
+        goToSlide(2);
+      });
+
+      /* Page 4：REVEAL 按钮 */
+      document.getElementById('p4-btn-reveal').addEventListener('click', (e) => {
+        e.stopPropagation();
+        revealNextEntry(4);
+      });
+
+      document.getElementById('p4-btn-reset').addEventListener('click', (e) => {
+        e.stopPropagation();
+        resetRevealEntries(4);
+      });
+
+      /* Page 9：REVEAL 按钮 */
+      document.getElementById('p9-btn-reveal').addEventListener('click', (e) => {
+        e.stopPropagation();
+        revealNextEntry(9);
+      });
+
+      document.getElementById('p9-btn-reset').addEventListener('click', (e) => {
+        e.stopPropagation();
+        resetRevealEntries(9);
+      });
+
+      /* Page 6：视频演示与 REVEAL 标记 */
+      const p6RevealBtn = document.getElementById('p6-btn-reveal');
+      const p6Videos = document.querySelectorAll('#slide-06-kp2-intro video');
+
+      p6Videos.forEach(video => {
+        video.addEventListener('play', () => {
+          p6Videos.forEach(otherVideo => {
+            if (otherVideo !== video) otherVideo.pause();
+          });
+        });
+      });
+
+      p6RevealBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('slide-06-kp2-intro').classList.add('is-revealed');
+      });
+
+      document.getElementById('p6-btn-reset').addEventListener('click', (e) => {
+        e.stopPropagation();
+        p6Videos.forEach(video => {
+          video.pause();
+          video.currentTime = 0;
+        });
+        document.getElementById('slide-06-kp2-intro').classList.remove('is-revealed');
+      });
+
+      /* 所有 .btn-next 按钮（通过 data-target 指定目标页） */
+      document.querySelectorAll('.btn-next[data-target]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); /* 防止事件冒泡触发 slide-01-cover 的整页点击 */
+          const target = parseFloat(btn.getAttribute('data-target'));
+          goToSlide(target);
+        });
+      });
+
+      /* 所有 .btn-prev 按钮（回退功能，同样通过 data-target） */
+      document.querySelectorAll('.btn-prev[data-target]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const target = parseFloat(btn.getAttribute('data-target'));
+          goToSlide(target);
+        });
+      });
+
+      /* 初始化 16:9 缩放 */
+      scalePresentation();
+
+    });
+  </script>
+</body>
+</html>
