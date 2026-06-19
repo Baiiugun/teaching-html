@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Section 2 — Disaster Newsroom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+SC:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   1. CSS CUSTOM PROPERTIES
+   ============================================================ */
+:root {
+  --color-bg-base:     #EBF8FF;
+  --color-bg-surface:  #FFFFFF;
+  --color-bg-elevated: #F0F9FF;
+  --color-bg-overlay:  rgba(235,248,255,0.88);
+  --color-text-primary:   #1E3A5F;
+  --color-text-secondary: #0C5F8C;
+  --color-text-muted:     #5AA8CC;
+  --color-text-inverse:   #FFFFFF;
+  --accent-when:  #FF6B35;
+  --accent-while: #00B4D8;
+  --accent-sand:  #FBBF24;
+  --color-success: #2DCB7A;
+  --color-warning: #F59E0B;
+  --color-error:   #E63946;
+  --color-border:        #BAE6FD;
+  --color-border-active: #0EA5E9;
+  --font-display: Impact, 'Bebas Neue', 'Arial Black', 'Microsoft YaHei', sans-serif;
+  --font-body:    'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', Arial, sans-serif;
+  --font-mono:    Consolas, 'Space Mono', 'Courier New', monospace;
+  --font-size-display: 80px;
+  --font-size-heading: 46px;
+  --font-size-body:    29px;
+  --font-size-small:   22px;
+  --font-size-micro:   16px;
+  --presentation-scale: 1;
+  --space-xs:  8px;
+  --space-sm:  16px;
+  --space-md:  24px;
+  --space-lg:  40px;
+  --space-xl:  64px;
+  --space-2xl: 96px;
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-full: 9999px;
+}
+
+/* ============================================================
+   2. GLOBAL RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--color-bg-base); }
+
+/* ============================================================
+   3. LAYOUT
+   ============================================================ */
+.presentation-wrapper {
+  position: fixed;
+  top: 50%; left: 50%;
+  width: 1920px; height: 1080px;
+  transform-origin: center center;
+}
+
+.slide {
+  display: none;
+  position: absolute;
+  top: 0; left: 0;
+  width: 1920px; height: 1080px;
+  flex-direction: column;
+  padding: 52px 72px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: linear-gradient(180deg, #5DADE2 0%, #87CEEB 35%, #BAE8F8 70%, #EBF8FF 100%);
+}
+.slide.is-active { display: flex; }
+
+.slide-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.slide-footer {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.footer-left  { display: flex; align-items: center; gap: var(--space-sm); }
+.footer-right { display: flex; align-items: center; gap: var(--space-md); }
+
+/* ============================================================
+   4. TYPOGRAPHY
+   ============================================================ */
+.slide-label {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-bottom: var(--space-sm);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   5. SHARED COMPONENTS
+   ============================================================ */
+.is-hidden { display: none !important; }
+
+.highlight-when  { color: var(--accent-when);  font-weight: 700; letter-spacing: 0.02em; }
+.highlight-while { color: var(--accent-while); font-weight: 700; letter-spacing: 0.02em; }
+.highlight-seq   { color: var(--accent-sand);  font-weight: 700; letter-spacing: 0.02em; }
+
+.btn-next {
+  font-family: var(--font-body); font-size: var(--font-size-small); font-weight: 700;
+  color: var(--color-text-inverse); background: var(--accent-when);
+  border: none; border-radius: var(--radius-sm); padding: 12px 32px;
+  cursor: pointer; transition: filter 150ms ease, transform 150ms ease;
+}
+.btn-next:hover { filter: brightness(1.1); transform: scale(1.02); }
+
+.btn-prev {
+  font-family: var(--font-body); font-size: var(--font-size-small); font-weight: 700;
+  color: var(--color-text-secondary); background: transparent;
+  border: 2px solid var(--color-border-active); border-radius: var(--radius-sm); padding: 10px 28px;
+  cursor: pointer; transition: background 150ms ease, transform 150ms ease;
+}
+.btn-prev:hover { background: var(--color-bg-elevated); transform: scale(1.02); }
+.btn-prev:disabled {
+  opacity: 0.35; cursor: not-allowed; pointer-events: none;
+}
+
+.slide-counter {
+  font-family: var(--font-mono); font-size: var(--font-size-micro); color: var(--color-text-muted);
+}
+
+/* ============================================================
+   6. S2 COMPONENTS — Setup Modal
+   ============================================================ */
+#s2-setup-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(14, 32, 60, 0.82);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.s2-modal-box {
+  width: 760px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-active);
+  border-radius: var(--radius-lg);
+  padding: 48px 64px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.28);
+  transform: scale(var(--presentation-scale));
+  transform-origin: center center;
+}
+.s2-modal-title {
+  font-family: var(--font-display); font-size: 54px; color: var(--color-text-primary);
+  font-weight: 400; text-align: center; margin-bottom: 28px;
+}
+.s2-modal-row { display: flex; align-items: center; gap: var(--space-md); margin-bottom: 20px; }
+.s2-modal-label {
+  font-family: var(--font-body); font-size: var(--font-size-body); color: var(--color-text-secondary);
+}
+.s2-number-input {
+  width: 120px; height: 56px;
+  font-family: var(--font-mono); font-size: 40px;
+  color: var(--color-text-primary);
+  border: 2px solid var(--color-border-active); border-radius: var(--radius-md);
+  text-align: center; background: var(--color-bg-elevated); outline: none;
+}
+.s2-btn-generate {
+  font-family: var(--font-body); font-size: var(--font-size-small); font-weight: 700;
+  color: var(--color-text-inverse); background: var(--accent-while);
+  border: none; border-radius: var(--radius-sm); padding: 12px 32px;
+  cursor: pointer; transition: filter 150ms ease; width: 100%; margin-bottom: var(--space-md);
+  display: block;
+}
+.s2-btn-generate:hover { filter: brightness(1.1); }
+.s2-btn-start-modal {
+  font-family: var(--font-body); font-size: var(--font-size-small); font-weight: 700;
+  color: var(--color-text-inverse); background: var(--accent-when);
+  border: none; border-radius: var(--radius-sm); padding: 12px 32px;
+  cursor: pointer; transition: filter 150ms ease; width: 100%; display: block;
+}
+.s2-btn-start-modal:hover { filter: brightness(1.1); }
+.s2-btn-start-modal:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+.s2-group-preview {
+  margin-bottom: 20px;
+  padding: 14px 20px;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--accent-sand);
+  font-family: var(--font-body); font-size: 22px; line-height: 1.55;
+}
+
+/* ============================================================
+   S2 COMPONENTS — Timer (Page 3)
+   ============================================================ */
+.s2-timer-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  margin: 10px 0 8px;
+}
+.s2-timer-circle {
+  width: 280px; height: 280px; border-radius: 50%;
+  border: 8px solid currentColor;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 600ms ease, border-color 600ms ease;
+  color: var(--accent-while);
+}
+#s2-timer-display {
+  font-family: var(--font-display); font-size: 104px;
+  color: inherit; letter-spacing: 0.04em;
+}
+.s2-timer-presets {
+  display: flex; gap: var(--space-sm); justify-content: center; margin-top: 14px;
+}
+.s2-timer-preset-btn {
+  font-family: var(--font-body); font-size: var(--font-size-small); font-weight: 700;
+  padding: 8px 20px; border: 2px solid var(--color-border-active); border-radius: var(--radius-full);
+  background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: all 150ms ease;
+}
+.s2-timer-preset-btn.is-active {
+  background: var(--accent-while); color: var(--color-text-inverse); border-color: var(--accent-while);
+}
+.s2-timer-controls {
+  display: flex; gap: var(--space-sm); justify-content: center; margin-top: 10px;
+}
+#s2-timer-toggle {
+  font-family: var(--font-body); font-size: var(--font-size-small); font-weight: 700;
+  color: var(--color-text-inverse); background: var(--accent-when);
+  border: none; border-radius: var(--radius-sm); padding: 12px 32px;
+  cursor: pointer; transition: filter 150ms ease;
+}
+#s2-timer-toggle:hover { filter: brightness(1.1); }
+#s2-timer-toggle:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+#s2-timer-toggle.is-paused { background: var(--accent-sand); }
+#s2-timer-reset {
+  font-family: var(--font-body); font-size: var(--font-size-small); font-weight: 700;
+  color: var(--color-text-secondary); background: transparent;
+  border: 2px solid var(--color-border-active); border-radius: var(--radius-sm); padding: 12px 24px;
+  cursor: pointer; transition: background 150ms ease;
+}
+#s2-timer-reset:hover { background: var(--color-bg-elevated); }
+.s2-tasks-list {
+  list-style: none; margin-top: 10px;
+}
+.s2-tasks-list li {
+  font-family: var(--font-body); font-size: var(--font-size-body);
+  color: var(--color-text-primary); line-height: 1.65; padding: 2px 0;
+}
+#s2-timesup-banner {
+  background: var(--color-error); color: var(--color-text-inverse);
+  border-radius: var(--radius-md); padding: var(--space-sm) var(--space-lg);
+  font-family: var(--font-body); font-size: var(--font-size-heading); font-weight: 700;
+  text-align: center; margin-top: 10px;
+}
+
+/* ============================================================
+   S2 COMPONENTS — Spin Wheel (Page 4)
+   ============================================================ */
+.s2-draw-layout {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; min-height: 0;
+}
+.s2-draw-phase-label {
+  font-family: var(--font-mono); font-size: var(--font-size-body);
+  color: var(--color-text-secondary); margin-bottom: 16px; text-align: center;
+}
+.s2-wheel-wrapper {
+  position: relative; width: 480px; height: 480px;
+}
+#s2-wheel-container { width: 480px; height: 480px; overflow: hidden; border-radius: 50%; }
+#s2-wheel-svg { display: block; width: 100%; height: 100%; }
+.s2-wheel-pointer {
+  position: absolute; top: -24px; left: 50%; transform: translateX(-50%);
+  color: var(--accent-when); font-size: 44px; pointer-events: none; line-height: 1;
+}
+#s2-btn-spin {
+  font-family: var(--font-body); font-size: var(--font-size-heading); font-weight: 700;
+  color: var(--color-text-inverse); background: var(--accent-when);
+  border: none; border-radius: var(--radius-sm); padding: 12px 44px;
+  cursor: pointer; transition: filter 150ms ease; display: block; margin: 16px auto 0;
+}
+#s2-btn-spin:hover { filter: brightness(1.1); }
+#s2-btn-spin:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+#s2-winner-announcement {
+  font-family: var(--font-display); font-size: 64px; color: var(--accent-when);
+  text-align: center; margin-top: 8px;
+}
+#s2-btn-start-interview {
+  font-family: var(--font-body); font-size: var(--font-size-body); font-weight: 700;
+  color: var(--color-text-inverse); background: var(--accent-when);
+  border: none; border-radius: var(--radius-sm); padding: 12px 40px;
+  cursor: pointer; transition: filter 150ms ease; display: block; margin: 8px auto 0;
+}
+#s2-btn-start-interview:hover { filter: brightness(1.1); }
+
+/* ============================================================
+   S2 COMPONENTS — Group Cards (Page 2)
+   ============================================================ */
+.s2-group-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 32px; flex: 1; align-items: center; margin-top: 0;
+}
+.s2-group-card {
+  background: var(--color-bg-surface); border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg); padding: 42px 38px;
+  min-height: 520px; overflow: visible;
+  display: flex; flex-direction: column;
+}
+.s2-group-card--a { border-top: 5px solid var(--accent-when); }
+.s2-group-card--b { border-top: 5px solid var(--accent-while); }
+.s2-group-card--c { border-top: 5px solid var(--accent-sand); }
+.s2-card-title {
+  font-family: var(--font-display); font-size: 58px;
+  font-weight: 400; color: var(--color-text-primary); margin-bottom: var(--space-xs);
+}
+.s2-card-page {
+  font-family: var(--font-mono); font-size: 26px;
+  color: var(--color-text-secondary); margin-bottom: var(--space-xs);
+}
+.s2-card-excerpt {
+  font-family: var(--font-body); font-size: 27px; line-height: 1.45;
+  color: var(--color-text-muted); font-style: italic;
+  border-top: 1px solid var(--color-border); margin-top: var(--space-sm);
+  padding-top: var(--space-sm); margin-bottom: var(--space-sm);
+}
+.s2-team-list { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 8px; margin-top: 24px; }
+.s2-team-chip {
+  font-family: var(--font-mono); font-size: 20px; font-weight: 700;
+  padding: 6px 13px; border-radius: var(--radius-full);
+  background: var(--color-bg-elevated); color: var(--color-text-primary);
+  border: 1px solid var(--color-border-active);
+}
+
+/* ============================================================
+   S2 COMPONENTS — Role Cards (Page 5)
+   ============================================================ */
+.s2-presenter-header { margin-bottom: 16px; flex-shrink: 0; }
+.s2-presenter-title {
+  font-family: var(--font-display); font-size: var(--font-size-display);
+  font-weight: 400; color: var(--color-text-primary);
+}
+.s2-article-subtitle {
+  font-family: var(--font-mono); font-size: var(--font-size-body);
+  color: var(--color-text-secondary); margin-top: var(--space-xs);
+}
+.s2-role-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 32px; margin-bottom: 16px; flex-shrink: 0;
+}
+.s2-role-card {
+  background: var(--color-bg-surface); border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg); padding: 22px 32px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.s2-role-card--reporter    { border-top: 5px solid var(--accent-when); }
+.s2-role-card--interviewee { border-top: 5px solid var(--accent-while); }
+.s2-role-title {
+  font-family: var(--font-display); font-size: var(--font-size-heading);
+  color: var(--color-text-primary); font-weight: 400;
+}
+.s2-role-tips {
+  font-family: var(--font-body); font-size: var(--font-size-body);
+  color: var(--color-text-secondary); line-height: 1.55; list-style: none;
+}
+.s2-role-tips li::before { content: '· '; }
+#s2-btn-rescue {
+  font-family: var(--font-body); font-size: var(--font-size-small); font-weight: 700;
+  background: transparent; color: var(--color-text-secondary);
+  border: 2px solid var(--color-border-active); border-radius: var(--radius-sm);
+  padding: 8px 20px; cursor: pointer; transition: background 150ms ease;
+}
+#s2-btn-rescue:hover { background: var(--color-bg-elevated); }
+#s2-rescue-qa-content {
+  margin-top: 12px;
+  background: var(--color-bg-elevated);
+  border: 1px dashed var(--color-border-active);
+  border-radius: var(--radius-md);
+  padding: 22px 28px;
+  overflow: visible; max-height: none;
+}
+.s2-qa-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  margin-bottom: 8px;
+  font-family: var(--font-body); font-size: 24px;
+  color: var(--color-text-primary); line-height: 1.5;
+}
+.s2-qa-q-label { color: var(--accent-when);  font-weight: 700; margin-right: 6px; }
+.s2-qa-a-label { color: var(--accent-while); font-weight: 700; margin-right: 6px; }
+#s2-btn-next-draw, #s2-btn-finish {
+  font-family: var(--font-body); font-size: var(--font-size-small); font-weight: 700;
+  color: var(--color-text-inverse); background: var(--accent-while);
+  border: none; border-radius: var(--radius-sm); padding: 12px 32px;
+  cursor: pointer; transition: filter 150ms ease;
+}
+#s2-btn-next-draw:hover { filter: brightness(1.1); }
+#s2-btn-finish { background: var(--accent-when); }
+#s2-btn-finish:hover { filter: brightness(1.1); }
+
+/* ============================================================
+   S2 COMPONENTS — Page 1 Rules
+   ============================================================ */
+.s2-page-title {
+  font-family: var(--font-display); font-size: var(--font-size-display);
+  color: var(--color-text-primary); font-weight: 400; margin-bottom: var(--space-md); flex-shrink: 0;
+}
+.s2-rules-list { list-style: none; flex: 1; overflow: visible; }
+.s2-rules-list li {
+  font-family: var(--font-body); font-size: var(--font-size-body);
+  color: var(--color-text-primary); line-height: 1.78; padding: 3px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.s2-rules-list li:last-child { border-bottom: none; }
+.s2-alert-banner {
+  background: var(--color-bg-surface); border-left: 6px solid var(--accent-when);
+  border-radius: var(--radius-md); padding: var(--space-sm) var(--space-lg);
+  margin-top: var(--space-md);
+  font-family: var(--font-body); font-size: var(--font-size-heading);
+  color: var(--accent-when); font-weight: 700; text-align: center; flex-shrink: 0;
+}
+
+/* ============================================================
+   S2 COMPONENTS — Page 6 Summary
+   ============================================================ */
+#s2-slide-06-summary .slide-body {
+  align-items: center; justify-content: center;
+}
+.s2-summary-title {
+  font-family: var(--font-display); font-size: var(--font-size-display);
+  color: var(--color-text-primary); font-weight: 400; text-align: center;
+  margin-bottom: var(--space-lg);
+}
+.s2-takeaways { list-style: none; max-width: 1200px; width: 100%; margin-bottom: var(--space-lg); }
+.s2-takeaways li {
+  font-family: var(--font-body); font-size: var(--font-size-body);
+  color: var(--color-text-primary); line-height: 2; padding: 10px var(--space-md);
+  border-left: 4px solid var(--accent-while); margin-bottom: var(--space-sm);
+  background: var(--color-bg-surface); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.s2-closing {
+  font-family: var(--font-display); font-size: var(--font-size-heading);
+  color: var(--color-text-secondary); text-align: center; font-weight: 400;
+}
+
+/* ============================================================
+   7. ANIMATIONS
+   ============================================================ */
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-reveal { animation: revealUp 400ms ease-out forwards; }
+
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+
+@keyframes flashBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ① SETUP MODAL — auto-shown on load -->
+<div id="s2-setup-overlay">
+  <div class="s2-modal-box">
+    <h1 class="s2-modal-title">Section 2 Setup</h1>
+    <div class="s2-modal-row">
+      <label class="s2-modal-label" for="s2-team-count-input">Total number of teams:</label>
+      <input type="number" id="s2-team-count-input" class="s2-number-input" value="15" min="3" max="30">
+    </div>
+    <button id="s2-btn-generate" class="s2-btn-generate">Generate Groups ▶</button>
+    <div id="s2-group-preview" class="s2-group-preview is-hidden"></div>
+    <button id="s2-btn-start" class="s2-btn-start-modal" disabled>Start Section 2 →</button>
+  </div>
+</div>
+
+<div class="presentation-wrapper">
+
+  <!-- ══════════════════════════════════════════════
+       PAGE 1 — RULES
+       ══════════════════════════════════════════════ -->
+  <section class="slide is-active" id="s2-slide-01-rules" data-slide="s2-1">
+    <div class="slide-body">
+      <p class="slide-label">Section 2 · Reporter Challenge</p>
+      <h1 class="s2-page-title">Disaster Newsroom</h1>
+      <ol class="s2-rules-list">
+        <li>1.&nbsp; Each team is randomly assigned one article to read.</li>
+        <li>2.&nbsp; Read your article carefully — you have about 6 minutes.</li>
+        <li>3.&nbsp; Prepare at least 3 reporter questions about the event.</li>
+        <li>4.&nbsp; Prepare at least 3 interviewee answers based on the article.</li>
+        <li>5.&nbsp; Choose two team members: one Reporter and one Interviewee.</li>
+        <li>6.&nbsp; Practise the interview inside your group.</li>
+        <li>7.&nbsp; Any team can be randomly selected — be ready!</li>
+        <li>8.&nbsp; 3 teams will be drawn to perform. The rest should listen and note.</li>
+      </ol>
+      <div class="s2-alert-banner">⚡ Every team must prepare. Anyone could be picked.</div>
+    </div>
+    <footer class="slide-footer">
+      <div class="footer-left">
+        <button class="btn-prev" data-action="back" disabled>PREVIOUS</button>
+      </div>
+      <div class="footer-right">
+        <span class="slide-counter">1 / 6</span>
+        <button class="btn-next" data-target="s2-2">NEXT →</button>
+      </div>
+    </footer>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       PAGE 2 — GROUPS
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="s2-slide-02-groups" data-slide="s2-2">
+    <div class="slide-body">
+      <p class="slide-label">Your Group · Your Article</p>
+      <div class="s2-group-cards">
+        <div class="s2-group-card s2-group-card--a">
+          <div class="s2-card-title">Article A</div>
+          <div class="s2-card-page">📖 Page 44</div>
+          <div class="s2-card-excerpt">"We were driving home when the strong winds started…"</div>
+          <div class="s2-team-list" id="s2-group-list-a"></div>
+        </div>
+        <div class="s2-group-card s2-group-card--b">
+          <div class="s2-card-title">Article B</div>
+          <div class="s2-card-page">📖 Page 45</div>
+          <div class="s2-card-excerpt">"When Jenny looked up, thick black clouds were forming…"</div>
+          <div class="s2-team-list" id="s2-group-list-b"></div>
+        </div>
+        <div class="s2-group-card s2-group-card--c">
+          <div class="s2-card-title">Article C</div>
+          <div class="s2-card-page">📖 Page 49</div>
+          <div class="s2-card-excerpt">"Last Friday started terribly. First, my alarm clock…"</div>
+          <div class="s2-team-list" id="s2-group-list-c"></div>
+        </div>
+      </div>
+    </div>
+    <footer class="slide-footer">
+      <div class="footer-left">
+        <button class="btn-prev" data-action="back">PREVIOUS</button>
+      </div>
+      <div class="footer-right">
+        <span class="slide-counter">2 / 6</span>
+        <button class="btn-next" data-target="s2-3">NEXT →</button>
+      </div>
+    </footer>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       PAGE 3 — READING + TIMER
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="s2-slide-03-prep" data-slide="s2-3">
+    <div class="slide-body">
+      <p class="slide-label">Team Reading &amp; Preparation</p>
+      <div class="s2-timer-wrap">
+        <div class="s2-timer-circle" id="s2-timer-circle">
+          <span id="s2-timer-display">06:00</span>
+        </div>
+        <div class="s2-timer-presets">
+          <button class="s2-timer-preset-btn" id="s2-timer-btn-4">4 min</button>
+          <button class="s2-timer-preset-btn" id="s2-timer-btn-5">5 min</button>
+          <button class="s2-timer-preset-btn is-active" id="s2-timer-btn-6">6 min</button>
+        </div>
+        <div class="s2-timer-controls">
+          <button id="s2-timer-toggle">▶ Start</button>
+          <button id="s2-timer-reset">↺ Reset</button>
+        </div>
+      </div>
+      <ul class="s2-tasks-list">
+        <li>1.&nbsp; Turn to your assigned article in your textbook.</li>
+        <li>2.&nbsp; Read it carefully.</li>
+        <li>3.&nbsp; Prepare 3 reporter questions &nbsp;(use <span class="highlight-when">when</span> / <span class="highlight-while">while</span> + past tense).</li>
+        <li>4.&nbsp; Prepare 3 interviewee answers (use <span class="highlight-when">when</span> / <span class="highlight-while">while</span> + past continuous).</li>
+      </ul>
+      <div id="s2-timesup-banner" class="is-hidden">⏰ Time's up!&nbsp; Get ready for the random draw!</div>
+    </div>
+    <footer class="slide-footer">
+      <div class="footer-left">
+        <button class="btn-prev" data-action="back">PREVIOUS</button>
+      </div>
+      <div class="footer-right">
+        <span class="slide-counter">3 / 6</span>
+        <button class="btn-next" data-target="s2-4">NEXT →</button>
+      </div>
+    </footer>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       PAGE 4 — SPIN WHEEL
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="s2-slide-04-draw" data-slide="s2-4">
+    <div class="slide-body">
+      <div class="s2-draw-layout">
+        <p id="s2-draw-phase-label" class="s2-draw-phase-label">Draw 1 of 3 &nbsp;·&nbsp; Article A &nbsp;·&nbsp; p.44</p>
+        <div class="s2-wheel-wrapper">
+          <div class="s2-wheel-pointer">▼</div>
+          <div id="s2-wheel-container"></div>
+        </div>
+        <button id="s2-btn-spin">SPIN!</button>
+        <div id="s2-winner-announcement" class="is-hidden"></div>
+        <button id="s2-btn-start-interview" class="is-hidden">→ Start Interview</button>
+      </div>
+    </div>
+    <footer class="slide-footer">
+      <div class="footer-left">
+        <button class="btn-prev" data-action="back">PREVIOUS</button>
+      </div>
+      <div class="footer-right">
+        <span class="slide-counter">4 / 6</span>
+      </div>
+    </footer>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       PAGE 5 — PRESENTATION (reused 3×)
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="s2-slide-05-present" data-slide="s2-5">
+    <div class="slide-body">
+      <div class="s2-presenter-header">
+        <div id="s2-presenter-label" class="s2-presenter-title">Now Presenting: Team —</div>
+        <div id="s2-article-label"   class="s2-article-subtitle">Article A · Page 44</div>
+      </div>
+      <div class="s2-role-grid">
+        <div class="s2-role-card s2-role-card--reporter">
+          <div class="s2-role-title">📋 Reporter</div>
+          <ul class="s2-role-tips">
+            <li>Ask 3 questions.</li>
+            <li>Keep eye contact.</li>
+            <li>Speak clearly.</li>
+          </ul>
+        </div>
+        <div class="s2-role-card s2-role-card--interviewee">
+          <div class="s2-role-title">🎙 Interviewee</div>
+          <ul class="s2-role-tips">
+            <li>Answer based on the article.</li>
+            <li>Use complete sentences.</li>
+            <li>Use <span class="highlight-when">when</span> / <span class="highlight-while">while</span>.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <button id="s2-btn-rescue">💡 Need Help?&nbsp; Show Sample Q&amp;A</button>
+        <div id="s2-rescue-qa-content" class="is-hidden"></div>
+      </div>
+    </div>
+    <footer class="slide-footer">
+      <div class="footer-left">
+        <button class="btn-prev" data-action="back">PREVIOUS</button>
+      </div>
+      <div class="footer-right">
+        <span class="slide-counter">5 / 6</span>
+        <button id="s2-btn-next-draw">Next Draw</button>
+        <button id="s2-btn-finish" class="is-hidden">Finish →</button>
+      </div>
+    </footer>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       PAGE 6 — SUMMARY
+       ══════════════════════════════════════════════ -->
+  <section class="slide" id="s2-slide-06-summary" data-slide="s2-6">
+    <div class="slide-body">
+      <p class="slide-label">Section 2 · Done!</p>
+      <div class="s2-summary-title">Great work today.</div>
+      <ul class="s2-takeaways">
+        <li>A good reporter asks clear, focused questions.</li>
+        <li>A good interviewee answers with <span class="highlight-when">when</span> / <span class="highlight-while">while</span> + past continuous.</li>
+        <li>Good preparation helps the whole team feel confident.</li>
+        <li>Listening carefully is also part of the task.</li>
+      </ul>
+      <div class="s2-closing">See you next time.</div>
+    </div>
+    <footer class="slide-footer">
+      <div class="footer-left">
+        <button class="btn-prev" data-action="back">PREVIOUS</button>
+      </div>
+      <div class="footer-right">
+        <span class="slide-counter">6 / 6</span>
+      </div>
+    </footer>
+  </section>
+
+</div><!-- /.presentation-wrapper -->
+
+<script>
+/* ============================================================
+   RESCUE Q&A DATA
+   ============================================================ */
+const RESCUE_QA = {
+  A: [
+    { Q: "What were you doing when the strong winds started?",
+      A: "We were driving home from our relatives' house when the strong winds started." },
+    { Q: "What was happening while you were driving back?",
+      A: "It was raining hard while we were driving back. A truck nearly hit us." },
+    { Q: "What did you find when you finally got home?",
+      A: "When we got home, we found water everywhere. The house looked awful." }
+  ],
+  B: [
+    { Q: "What did you notice when you looked up at the sky?",
+      A: "When I looked up, thick black clouds were forming and the rain was beating against our roof." },
+    { Q: "What was happening while your family was waiting in the safe room?",
+      A: "While we were waiting, my little sister started to cry. Dad gave her chocolate to calm her down." },
+    { Q: "What did you find when you stepped outside after the storm?",
+      A: "When we stepped outside, the sun was shining. People were asking if everyone was safe." }
+  ],
+  C: [
+    { Q: "What were you doing while you were waiting for the bus?",
+      A: "I was reviewing my notes for a test while I was waiting for the bus." },
+    { Q: "What happened while you were standing at the bus stop?",
+      A: "While I was waiting, thunder rolled across the sky and it started to pour. I got soaking wet." },
+    { Q: "What did your teacher say when you finally reached school?",
+      A: "When I finally reached my classroom, my teacher said we weren't having a test after all!" }
+  ]
+};
+
+/* ============================================================
+   APP STATE
+   ============================================================ */
+const AppState = {
+  teamCount:     0,
+  articleGroups: { A: [], B: [], C: [] },
+  drawPhase:     1,
+  drawnTeams:    [],
+  currentWinner: null,
+  timer: {
+    duration:   360,
+    remaining:  360,
+    intervalId: null,
+    running:    false
+  },
+  currentSlide: 's2-1',
+  totalSlides:  6,
+  navigationHistory: []
+};
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function assignGroups(n) {
+  const teams   = Array.from({ length: n }, (_, i) => i + 1);
+  const shuffled = shuffle(teams);
+  AppState.articleGroups = { A: [], B: [], C: [] };
+  shuffled.forEach((team, idx) => {
+    AppState.articleGroups[['A','B','C'][idx % 3]].push(team);
+  });
+}
+
+function renderGroupPreview() {
+  const preview = document.getElementById('s2-group-preview');
+  const colors  = { A: 'var(--accent-when)', B: 'var(--accent-while)', C: 'var(--accent-sand)' };
+  const labels  = { A: 'Article A · p.44', B: 'Article B · p.45', C: 'Article C · p.49' };
+  preview.innerHTML = '';
+  ['A','B','C'].forEach(key => {
+    const row = document.createElement('div');
+    row.innerHTML =
+      `<span style="color:${colors[key]};font-weight:700">${labels[key]}</span>  →  ` +
+      AppState.articleGroups[key].map(t => 'Team ' + t).join(' · ');
+    preview.appendChild(row);
+  });
+}
+
+function renderGroupLists() {
+  ['A','B','C'].forEach(key => {
+    const el = document.getElementById(`s2-group-list-${key.toLowerCase()}`);
+    el.innerHTML = '';
+    AppState.articleGroups[key].forEach(team => {
+      const chip = document.createElement('span');
+      chip.className   = 's2-team-chip';
+      chip.textContent = `Team ${team}`;
+      el.appendChild(chip);
+    });
+  });
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function captureDrawPageState() {
+  const container = document.getElementById('s2-wheel-container');
+  const winner    = document.getElementById('s2-winner-announcement');
+  const startBtn  = document.getElementById('s2-btn-start-interview');
+  const spinBtn   = document.getElementById('s2-btn-spin');
+
+  return {
+    phaseLabel: document.getElementById('s2-draw-phase-label').textContent,
+    wheelHTML: container.innerHTML,
+    wheelTeams: container.dataset.teams || '',
+    winnerText: winner.textContent,
+    winnerClass: winner.className,
+    startClass: startBtn.className,
+    spinDisabled: spinBtn.disabled,
+    spinOpacity: spinBtn.style.opacity
+  };
+}
+
+function captureNavigationState() {
+  const qa = document.getElementById('s2-rescue-qa-content');
+  return {
+    currentSlide: AppState.currentSlide,
+    teamCount: AppState.teamCount,
+    articleGroups: {
+      A: [...AppState.articleGroups.A],
+      B: [...AppState.articleGroups.B],
+      C: [...AppState.articleGroups.C]
+    },
+    drawPhase: AppState.drawPhase,
+    drawnTeams: [...AppState.drawnTeams],
+    currentWinner: AppState.currentWinner,
+    rescueVisible: !qa.classList.contains('is-hidden'),
+    drawPage: captureDrawPageState()
+  };
+}
+
+function updatePreviousButtons() {
+  const canGoBack = AppState.navigationHistory.length > 0;
+  document.querySelectorAll('[data-action="back"]').forEach(btn => {
+    btn.disabled = !canGoBack;
+  });
+}
+
+function restoreDrawPageState(saved) {
+  if (!saved) return;
+
+  const container = document.getElementById('s2-wheel-container');
+  container.innerHTML = saved.wheelHTML;
+  container.dataset.teams = saved.wheelTeams;
+  document.getElementById('s2-draw-phase-label').textContent = saved.phaseLabel;
+
+  const winner = document.getElementById('s2-winner-announcement');
+  winner.textContent = saved.winnerText;
+  winner.className = saved.winnerClass;
+
+  document.getElementById('s2-btn-start-interview').className = saved.startClass;
+  const spinBtn = document.getElementById('s2-btn-spin');
+  spinBtn.disabled = saved.spinDisabled;
+  spinBtn.style.opacity = saved.spinOpacity;
+}
+
+function switchSlide(target, { prepare = true, afterShow = null } = {}) {
+  const current = document.querySelector('.slide.is-active');
+  const next    = document.querySelector(`[data-slide="${target}"]`);
+  if (!current || !next || current === next) return;
+
+  current.style.animation = 'fadeOut 200ms ease forwards';
+  setTimeout(() => {
+    current.classList.remove('is-active');
+    current.style.animation = '';
+    next.classList.add('is-active');
+    next.style.animation = 'fadeIn 300ms ease forwards';
+    setTimeout(() => { next.style.animation = ''; }, 300);
+    AppState.currentSlide = target;
+
+    if (prepare && target === 's2-5') renderPresentPage();
+    if (prepare && target === 's2-4') setupDrawPage();
+    if (afterShow) afterShow();
+    updatePreviousButtons();
+  }, 200);
+}
+
+function goToSlide(target, { recordHistory = true, prepare = true } = {}) {
+  if (recordHistory) {
+    AppState.navigationHistory.push(captureNavigationState());
+  }
+  switchSlide(target, { prepare });
+}
+
+function goBack() {
+  const saved = AppState.navigationHistory.pop();
+  if (!saved) return;
+
+  AppState.teamCount = saved.teamCount;
+  AppState.articleGroups = {
+    A: [...saved.articleGroups.A],
+    B: [...saved.articleGroups.B],
+    C: [...saved.articleGroups.C]
+  };
+  AppState.drawPhase = saved.drawPhase;
+  AppState.drawnTeams = [...saved.drawnTeams];
+  AppState.currentWinner = saved.currentWinner;
+  renderGroupLists();
+
+  switchSlide(saved.currentSlide, {
+    prepare: false,
+    afterShow: () => {
+      if (saved.currentSlide === 's2-4') {
+        restoreDrawPageState(saved.drawPage);
+      }
+      if (saved.currentSlide === 's2-5') {
+        renderPresentPage();
+        if (saved.rescueVisible) {
+          document.getElementById('s2-rescue-qa-content').classList.remove('is-hidden');
+          document.getElementById('s2-btn-rescue').textContent = '🙈 Hide Sample Q&A';
+        }
+      }
+    }
+  });
+}
+
+/* ============================================================
+   DRAW PAGE
+   ============================================================ */
+function setupDrawPage() {
+  const phase = AppState.drawPhase;
+  const key   = ['A','B','C'][phase - 1];
+  const labels = [
+    'Draw 1 of 3  ·  Article A  ·  p.44',
+    'Draw 2 of 3  ·  Article B  ·  p.45',
+    'Draw 3 of 3  ·  Article C  ·  p.49'
+  ];
+  document.getElementById('s2-draw-phase-label').textContent = labels[phase - 1];
+
+  const available = AppState.articleGroups[key].filter(t => !AppState.drawnTeams.includes(t));
+  buildWheel(available);
+
+  document.getElementById('s2-winner-announcement').classList.add('is-hidden');
+  document.getElementById('s2-btn-start-interview').classList.add('is-hidden');
+  const spinBtn = document.getElementById('s2-btn-spin');
+  spinBtn.disabled     = false;
+  spinBtn.style.opacity = '';
+}
+
+function buildWheel(teams) {
+  const container = document.getElementById('s2-wheel-container');
+  container.innerHTML = '';
+  if (teams.length === 0) return;
+
+  const size = 480, R = 222, cx = size / 2, cy = size / 2, n = teams.length;
+  const angleStep = 360 / n;
+  const ns  = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('id',      's2-wheel-svg');
+  svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+  svg.setAttribute('width',   size);
+  svg.setAttribute('height',  size);
+  svg.style.transformOrigin = 'center center';
+  svg.style.transition      = 'transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+
+  const colors = ['var(--accent-while)', 'var(--accent-sand)'];
+
+  teams.forEach((team, i) => {
+    const a1 = (i * angleStep - 90) * (Math.PI / 180);
+    const a2 = ((i + 1) * angleStep - 90) * (Math.PI / 180);
+    const x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
+    const x2 = cx + R * Math.cos(a2), y2 = cy + R * Math.sin(a2);
+    const largeArc = angleStep > 180 ? 1 : 0;
+
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d',
+      `M ${cx},${cy} L ${x1},${y1} A ${R},${R} 0 ${largeArc},1 ${x2},${y2} Z`);
+    path.setAttribute('fill',      colors[i % 2]);
+    path.setAttribute('opacity',   '0.85');
+    path.setAttribute('data-team', team);
+    svg.appendChild(path);
+
+    const am = ((i + 0.5) * angleStep - 90) * (Math.PI / 180);
+    const tx = cx + R * 0.65 * Math.cos(am);
+    const ty = cy + R * 0.65 * Math.sin(am);
+    const txt = document.createElementNS(ns, 'text');
+    txt.setAttribute('x', tx); txt.setAttribute('y', ty);
+    txt.setAttribute('text-anchor',       'middle');
+    txt.setAttribute('dominant-baseline', 'middle');
+    txt.setAttribute('fill',        'var(--color-text-primary)');
+    txt.setAttribute('font-weight', '700');
+    txt.setAttribute('font-size',   n > 12 ? '20' : n > 8 ? '24' : '30');
+    txt.setAttribute('font-family', 'var(--font-body)');
+    txt.textContent = `T${team}`;
+    svg.appendChild(txt);
+  });
+
+  const dot = document.createElementNS(ns, 'circle');
+  dot.setAttribute('cx', cx); dot.setAttribute('cy', cy); dot.setAttribute('r', '18');
+  dot.setAttribute('fill',         'var(--color-bg-surface)');
+  dot.setAttribute('stroke',       'var(--color-border-active)');
+  dot.setAttribute('stroke-width', '2');
+  svg.appendChild(dot);
+
+  container.appendChild(svg);
+  container.dataset.teams = JSON.stringify(teams);
+}
+
+function spinWheel() {
+  const container = document.getElementById('s2-wheel-container');
+  const teams     = JSON.parse(container.dataset.teams || '[]');
+  if (!teams || teams.length === 0) return;
+
+  const winnerIdx   = Math.floor(Math.random() * teams.length);
+  const winner      = teams[winnerIdx];
+  const angleStep   = 360 / teams.length;
+  const sectorCenter = winnerIdx * angleStep + angleStep / 2;
+  const finalAngle   = 1080 + (360 - sectorCenter);
+
+  const spinBtn = document.getElementById('s2-btn-spin');
+  spinBtn.disabled      = true;
+  spinBtn.style.opacity = '0.45';
+
+  const svg = document.getElementById('s2-wheel-svg');
+  svg.style.transition = 'transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+  svg.style.transform  = `rotate(${finalAngle}deg)`;
+
+  svg.addEventListener('transitionend', function onEnd() {
+    svg.removeEventListener('transitionend', onEnd);
+
+    svg.querySelectorAll('path[data-team]').forEach(p => {
+      if (parseInt(p.dataset.team) === winner) {
+        p.setAttribute('stroke',       'var(--color-error)');
+        p.setAttribute('stroke-width', '4');
+      }
+    });
+
+    AppState.currentWinner = winner;
+    AppState.drawnTeams.push(winner);
+
+    const ann = document.getElementById('s2-winner-announcement');
+    ann.textContent = `🎉 Team ${winner} — you're up!`;
+    ann.classList.remove('is-hidden');
+    ann.classList.add('anim-reveal');
+
+    const sib = document.getElementById('s2-btn-start-interview');
+    sib.classList.remove('is-hidden');
+    sib.classList.add('anim-reveal');
+  }, { once: true });
+}
+
+/* ============================================================
+   PRESENT PAGE
+   ============================================================ */
+function renderPresentPage() {
+  const phase = AppState.drawPhase;
+  const key   = ['A','B','C'][phase - 1];
+  const artLabels = { A: 'Article A · Page 44', B: 'Article B · Page 45', C: 'Article C · Page 49' };
+
+  document.getElementById('s2-presenter-label').textContent = `Now Presenting: Team ${AppState.currentWinner}`;
+  document.getElementById('s2-article-label').textContent   = artLabels[key];
+
+  const qaContent = document.getElementById('s2-rescue-qa-content');
+  qaContent.innerHTML = '';
+  RESCUE_QA[key].forEach((item, i) => {
+    const row = document.createElement('div');
+    row.className = 's2-qa-row';
+    row.innerHTML = `<div><span class="s2-qa-q-label">Q${i+1}</span>${item.Q}</div>
+                     <div><span class="s2-qa-a-label">A${i+1}</span>${item.A}</div>`;
+    qaContent.appendChild(row);
+  });
+  qaContent.classList.add('is-hidden');
+
+  document.getElementById('s2-btn-rescue').textContent = '💡 Need Help?  Show Sample Q&A';
+
+  const nextDraw = document.getElementById('s2-btn-next-draw');
+  const finish   = document.getElementById('s2-btn-finish');
+  if (phase < 3) {
+    nextDraw.classList.remove('is-hidden');
+    finish.classList.add('is-hidden');
+  } else {
+    nextDraw.classList.add('is-hidden');
+    finish.classList.remove('is-hidden');
+  }
+}
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+function startTimer() {
+  if (AppState.timer.running) {
+    clearInterval(AppState.timer.intervalId);
+    AppState.timer.running = false;
+    const btn = document.getElementById('s2-timer-toggle');
+    btn.textContent = '▶ Resume';
+    btn.classList.remove('is-paused');
+    return;
+  }
+  if (AppState.timer.remaining <= 0) return;
+
+  AppState.timer.running = true;
+  const btn = document.getElementById('s2-timer-toggle');
+  btn.textContent = '⏸ Pause';
+  btn.classList.add('is-paused');
+
+  AppState.timer.intervalId = setInterval(() => {
+    AppState.timer.remaining--;
+    updateTimerDisplay();
+    if (AppState.timer.remaining <= 0) {
+      clearInterval(AppState.timer.intervalId);
+      AppState.timer.running = false;
+      const b = document.getElementById('s2-timer-toggle');
+      b.textContent = '▶ Start';
+      b.classList.remove('is-paused');
+      b.disabled = true;
+      const banner = document.getElementById('s2-timesup-banner');
+      banner.classList.remove('is-hidden');
+      banner.style.animation = 'none';
+      banner.offsetHeight; /* reflow to restart animation */
+      banner.style.animation = 'flashBlink 600ms ease 2';
+    }
+  }, 1000);
+}
+
+function resetTimer(seconds) {
+  clearInterval(AppState.timer.intervalId);
+  AppState.timer.running   = false;
+  AppState.timer.duration  = seconds;
+  AppState.timer.remaining = seconds;
+  const btn = document.getElementById('s2-timer-toggle');
+  btn.textContent = '▶ Start';
+  btn.classList.remove('is-paused');
+  btn.disabled = false;
+  document.getElementById('s2-timesup-banner').classList.add('is-hidden');
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const r   = AppState.timer.remaining;
+  const min = String(Math.floor(r / 60)).padStart(2, '0');
+  const sec = String(r % 60).padStart(2, '0');
+  document.getElementById('s2-timer-display').textContent = `${min}:${sec}`;
+  const circle = document.getElementById('s2-timer-circle');
+  if      (r === 0) circle.style.color = 'var(--color-error)';
+  else if (r <= 60) circle.style.color = 'var(--accent-when)';
+  else              circle.style.color = 'var(--accent-while)';
+}
+
+/* ============================================================
+   16:9 SCALING
+   ============================================================ */
+function scalePresentation() {
+  const wrapper = document.querySelector('.presentation-wrapper');
+  const scale   = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  document.documentElement.style.setProperty('--presentation-scale', scale);
+}
+window.addEventListener('resize', scalePresentation);
+scalePresentation();
+
+/* ============================================================
+   EVENT BINDING
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* --- Setup Modal --- */
+  document.getElementById('s2-btn-generate').addEventListener('click', () => {
+    const raw = parseInt(document.getElementById('s2-team-count-input').value) || 15;
+    const n   = Math.max(3, Math.min(30, raw));
+    document.getElementById('s2-team-count-input').value = n;
+    AppState.teamCount = n;
+    assignGroups(n);
+    renderGroupPreview();
+    document.getElementById('s2-group-preview').classList.remove('is-hidden');
+    document.getElementById('s2-btn-start').disabled = false;
+  });
+
+  document.getElementById('s2-btn-start').addEventListener('click', () => {
+    renderGroupLists();
+    const overlay = document.getElementById('s2-setup-overlay');
+    overlay.style.animation = 'fadeOut 200ms ease forwards';
+    setTimeout(() => { overlay.style.display = 'none'; }, 200);
+  });
+
+  /* --- Timer --- */
+  document.getElementById('s2-timer-toggle').addEventListener('click', startTimer);
+  document.getElementById('s2-timer-reset').addEventListener('click', () => {
+    resetTimer(AppState.timer.duration);
+  });
+  ['4','5','6'].forEach(m => {
+    document.getElementById(`s2-timer-btn-${m}`).addEventListener('click', () => {
+      document.querySelectorAll('.s2-timer-preset-btn').forEach(b => b.classList.remove('is-active'));
+      document.getElementById(`s2-timer-btn-${m}`).classList.add('is-active');
+      resetTimer(parseInt(m) * 60);
+    });
+  });
+
+  /* --- Wheel --- */
+  document.getElementById('s2-btn-spin').addEventListener('click', spinWheel);
+  document.getElementById('s2-btn-start-interview').addEventListener('click', () => {
+    goToSlide('s2-5');
+  });
+
+  /* --- Present Page --- */
+  document.getElementById('s2-btn-rescue').addEventListener('click', () => {
+    const qa  = document.getElementById('s2-rescue-qa-content');
+    const btn = document.getElementById('s2-btn-rescue');
+    const hidden = qa.classList.toggle('is-hidden');
+    btn.textContent = hidden
+      ? '💡 Need Help?  Show Sample Q&A'
+      : '🙈 Hide Sample Q&A';
+  });
+
+  document.getElementById('s2-btn-next-draw').addEventListener('click', () => {
+    AppState.navigationHistory.push(captureNavigationState());
+    AppState.drawPhase++;
+    AppState.currentWinner = null;
+    switchSlide('s2-4');
+  });
+
+  document.getElementById('s2-btn-finish').addEventListener('click', () => {
+    goToSlide('s2-6');
+  });
+
+  /* --- Generic forward navigation --- */
+  document.querySelectorAll('[data-target]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      goToSlide(btn.getAttribute('data-target'));
+    });
+  });
+
+  /* --- Rescue navigation: restore the exact prior screen and state --- */
+  document.querySelectorAll('[data-action="back"]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      goBack();
+    });
+  });
+
+  /* --- Initialize --- */
+  updateTimerDisplay();
+  setupDrawPage();   /* pre-builds wheel DOM; groups empty → no sectors drawn yet */
+  updatePreviousButtons();
+});
+</script>
+</body>
+</html>
